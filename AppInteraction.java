@@ -1,34 +1,49 @@
 package com.emilylouden.com;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.net.ServerSocket;
+
+import javax.swing.JTextArea;
 
 public class AppInteraction {
 
-	public void get_user_info() {
+	ServerSocket server;
 
+	AppInteraction() {
 		try {
-			// create HTTP get request
-			HttpClient client = HttpClient.newHttpClient();
-			HttpRequest request = HttpRequest.newBuilder().uri(URI.create("http://webcode.me")).build();
-
-			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-			System.out.println(response.body());
+			server = new ServerSocket(4444);
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.out.println("Could not listen on port 4444");
+			System.exit(-1);
 		}
 	}
 
-	public static void main(String[] args) {
-		AppInteraction test = new AppInteraction();
-		test.get_user_info();
+	public Thread getClient() {
+		while (true) {
+			ClientWorker w;
+			try {
+				// server.accept returns a client connection
+				// text area contains request from client
+				JTextArea textArea = new JTextArea();
+				w = new ClientWorker(server.accept(), textArea);
+				Thread t = new Thread(w);
+				t.start();
+				return t;
+			} catch (IOException e) {
+				System.out.println("Accept failed: 4444");
+				System.exit(-1);
+			}
+		}
+	}
+
+	protected void finalize() {
+		// Objects created in run method are finalized when
+		// program terminates and thread exits
+		try {
+			server.close();
+		} catch (IOException e) {
+			System.out.println("Could not close socket");
+			System.exit(-1);
+		}
 	}
 }
-
-// http://zetcode.com/java/getpostrequest/
