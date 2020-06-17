@@ -78,16 +78,23 @@ public class PasswordEncryption {
 			System.out.println("2");
 			// turns the String object into a byte string object
 			byte[] byteString = Base64.getMimeDecoder().decode(strToDecrypt.getBytes("UTF-8"));
-			
+
 			System.out.println("3");
 			byte[] decrypted = cipher.doFinal(byteString);
-			
+
 			System.out.println("4");
 			return new String(decrypted);
 		} catch (Exception e) {
 			System.out.println("Error while decrypting: " + e.toString());
 		}
 		return null;
+	}
+
+	public static void main(String[] args) {
+		String encrypted = PasswordEncryption.encrypt("test string", "secret key");
+		String decrypted = PasswordEncryption.decrypt(encrypted, "secret key");
+		System.out.println(decrypted);
+
 	}
 }
 
