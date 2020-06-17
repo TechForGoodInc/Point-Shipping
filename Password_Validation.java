@@ -14,7 +14,6 @@ public class Password_Validation {
 	private void database_password(int ID) {
 
 		String password;
-		PasswordEncryption decrypt = new PasswordEncryption();
 
 		try {
 
@@ -26,7 +25,7 @@ public class Password_Validation {
 
 			if (rs.next()) {
 				password = rs.getString("Password");
-				database_password = decrypt.decrypt(password, decryption_key);
+				database_password = PasswordEncryption.decrypt(password, decryption_key);
 			}
 
 			else {
