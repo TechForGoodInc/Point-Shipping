@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, json
 from markupsafe import escape
+import requests
 import psycopg2
 from psycopg2 import OperationalError
 
@@ -7,8 +8,24 @@ from psycopg2 import OperationalError
 app = Flask(__name__)
 
 if __name__ == '__main__':
-    app.run()
+   app.run()
 
+### TESTS ###
+@app.route('/')
+def init():
+    con = create_connection()
+    request = "SELECT * FROM users"
+    resp = execute_read_query(con, request)
+    to_send = app.response_class(response=json.dumps(resp), status=200, mimetype='application/json')
+    return to_send
+
+@app.route('/test/<col_type>')
+def test(col_type):
+    con = create_connection()
+    query = f"SELECT {col_type} from users"
+    resp = execute_read_query(con, query)
+    to_send = app.response_class(response=json.dumps(resp), status=200, mimetype='application/json')
+    return to_send
 
 ### SQL INIT ###
 def create_connection():
@@ -45,7 +62,6 @@ def execute_read_query(connection, query):
         print(f"The error '{e}' occurred")
         return False
 
-
 ### GET, POST, AND DELETE ###
 # get recieves data, post sends data
 @app.route('/', methods=['GET', 'POST', 'DELETE'])
@@ -65,23 +81,23 @@ def user():
             addr = request.form['address']
             pswd = request.form['password']
             query = f"""INSERT INTO users (username, id, firstname, lastname,
-            addr, pswd) VALUES ({username}, {idval}, {firstname},
+            email, addr, pswd) VALUES ({username}, {idval}, {firstname},
             {lastname}, {email}, {addr}, {pswd})"""
             execute_query(con, query)
             return True
 
-    else if request.method == 'GET':
+    elif request.method == 'GET':
         query = f"SELECT * FROM users WHERE username = {username}"
         resp = execute_read_query(con, query)
         if not resp:
-            response = Response(response=json.dumps(resp), status=200, mimetype='application/json')
+            response = app.response_class(response=json.dumps(resp), status=200, mimetype='application/json')
             return response
         else:
-            response = Response(status=199)
+            response = app.response_class(status=400)
             return response
         # 200 = standard ok status, 400 = user did not exist (client error)
 
-    else if request.method == 'DELETE':
+    elif request.method == 'DELETE':
         query = "DELETE FROM users WHERE username = {username}"
         return execute_read_query(con, query)
 
@@ -109,24 +125,80 @@ def identify_user():
     email = request.form['email']
     resp = execute_read_query(con, "SELECT id FROM users WHERE email = {email}")
     if not resp:
-        response = Response(response=json.dumps(resp), status=200, mimetype='application/json')
+        response = app.response_class(response=json.dumps(resp), status=200, mimetype='application/json')
         return response
     else:
-        response = Response(status=199)
+        response = app.response_class(status=199)
         return response
-        
-# authentication: send username, we send hash method/salt back, front end hashes password
-# and sends it back, we return password input == real password
-# return creds
 
+@app.route('/validate/', methods=['POST'])
+def validate():
+    username = request.form['username']
+    query = f"SELECT pswd FROM users WHERE username = {username}"
+    con = create_connection()
+    resp = execute_read_query(con, query)
+    if not resp:
+        response = app.response_class(response=json.dumps(resp), status = 200, mimetype='application/json')
+        return response
+    else:
+        return False
 
+@app.route('/authorize/', methods=['GET'])
+def postingAndVerifyingPwrd():
+    if verifyPasswrd:
+        if request.method == 'POST':
+            username = request.form['username']
+            query = f"SELECT pswd FROM users WHERE username = {username}"
+            con = create_connection()
+            resp = execute_read_query(con, query)
+            if not response:
+                return "user does not exist"
+            else:
+                if request.form['password'] == resp:
+                    return "pw verified"
+                else:
+                    return "incorrect pw"
 
+@app.route('/addpackage/<username>/', methods=['POST'])
+def addpackage(username):
+    con = create_connection()
+    userid = request.form['userid']
+    destination_address = request.form['destination_address']
+    sender_address = request.form['sender_address']
+    send_date = request.form['send_date']
+    price = request.form['price']
+    carrier = request.form['carrier']
+    date = request.form['date']
+    query = f"""INSERT INTO labels (userid, destination_address, sender_address,
+    send_date, price, carrier) VALUES ({userid}, {destination_address}, {sender_address},
+    {send_date}, {price}, {carrier}, {date})"""
+    return execute_query(con, query)
+
+@app.route('previouspackages/<userval>/', methods=['GET'])
+def get_packages(userval):
+    con = create_connection()
+    query = f"SELECT * FROM labels WHERE userid = {userval}"
+    return execute_query(con, query)
+
+# user checked out and paid for package
+# send post request with new shipping label info and username
+# return "ok"
+
+# for tomorrow:
+# create a user (username, password, email, etc.)
+# get username and password --- Chris
+
+# package labels, addresses, connect to user (user id same as package table?)
 
 # for debugging: export FLASK_ENV=development
 
 # in flask_app directory:
 # python3 -m venv venv
 # source venv/bin/activate
+
+# pip3 install flask
+# pip3 install requests
+# pip3 install psycopg2-binary
 
 # to run:
 # export FLASK_APP=server.py
