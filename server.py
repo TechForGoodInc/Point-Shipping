@@ -33,11 +33,18 @@ def user():
         firstname = request.form['firstname']
         lastname = request.form['lastname']
         email = request.form['email']
-        addr = request.form['address']
+        sender_name = request.form['sender_name']
+        sender_street = request.form['sender_street']
+        sender_city = request.form['sender_city']
+        sender_state = request.form['sender_state']
+        sender_zip = request.form['sender_zip']
+        sender_country = request.form['sender_country']
         pswd = request.form['password']
         # apostrophe escaped to work with SQL format
         query = f"""INSERT INTO users VALUES (\'{user_name}\', \'{idval}\',
-            \'{firstname}\', \'{lastname}\', \'{email}\', \'{addr}\', \'{pswd}\')"""
+            \'{firstname}\', \'{lastname}\', \'{email}\', \'{sender_name}\',
+            \'{sender_street}\', \'{sender_city}\', \'{sender_state}\',
+            \'{sender_zip}\', \'{sender_country}\', \'{pswd}\')"""
         if inter.execute_query(query):
             return "User added"
         else:
@@ -162,6 +169,8 @@ def addpackage(username):
                               height=i_height, weight=i_weight)
     
     send_date = request.form['send_date']
+
+    # price, service, carrier
 
     shipment = ez.Shipment.create(parcelObj=parcel,
                                   to_address=toAddress,
