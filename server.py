@@ -23,56 +23,70 @@ def init():
 @app.route('/user/', methods=['GET', 'POST', 'DELETE'])
 def user():
     user_name = request.form['username']
-    if request.method == 'POST':
-        user_exist = inter.execute_read_query(f"SELECT COUNT(*) FROM users WHERE username = \'{user_name}\'")
-        exist_check = user_exist[0][0]
-        max_id = 0
-        #max_id = inter.execute_query("SELECT MAX(id) FROM users")
-        if exist_check > 0:
-            return "User does not exist"
-        else:
-            idval = max_id + 1
-            firstname = request.form['firstname']
-            lastname = request.form['lastname']
-            email = request.form['email']
-            addr = request.form['address']
-            pswd = request.form['password']
-            query = f"""INSERT INTO users VALUES (\'{user_name}\', \'{idval}\',
+    if inter.user_exists(user_name) and request.method != 'DELETE':
+        return 'user already exists'
+
+    elif request.method == 'POST':
+        # used to generate the user id
+        max_id = inter.execute_query("SELECT MAX(id) FROM users")
+        idval = max_id + 1
+        firstname = request.form['firstname']
+        lastname = request.form['lastname']
+        email = request.form['email']
+        addr = request.form['address']
+        pswd = request.form['password']
+        # apostrophe escaped to work with SQL format
+        query = f"""INSERT INTO users VALUES (\'{user_name}\', \'{idval}\',
             \'{firstname}\', \'{lastname}\', \'{email}\', \'{addr}\', \'{pswd}\')"""
-            inter.execute_query(query)
+        if inter.execute_query(query):
             return "User added"
+        else:
+            return "User not added"
+
     elif request.method == 'GET':
         query = f"SELECT * FROM users WHERE username = \'{user_name}\'"
         resp = inter.execute_read_query(query)
-        if not resp:
+        print(resp)
+        if resp:
             response = app.response_class(response=json.dumps(resp),
                                           status=200,
                                           mimetype='application/json')
             return response
         else:
-            response = app.response_class(status=400)
+            resp = 'user does not exist'
+            response = app.response_class(response=resp,
+                                          status=400,
+                                          mimetype='application/json')
             return response
         # 200 = standard ok status, 400 = user did not exist (client error)
 
     elif request.method == 'DELETE':
-        query = "DELETE FROM users WHERE username = \'{username}\'"
-        return inter.execute_read_query(query)
+        query = "DELETE FROM users WHERE username = \'{user_name}\'"
+        if inter.execute_query(query):
+            return 'user deleted'
+        else:
+            return 'user deletion failed'
+
+    else:
+        'unavailable request'
 
 
 ### MODIFY USER ###
 # The column name represents what user attribute to update
 # ID val is accessible through user identifier method
-@app.route('/usermod/<col_name>', methods=['PUT'])
+@app.route('/usermod/<col_name>/', methods=['PUT'])
 def update_user(col_name):
     idval = request.form['id']
-    user_exist = inter.execute_query(f"SELECT COUNT(*) WHERE id = {idval}")
-    if user_exist > 0:
-        return False
+    user_exist = inter.execute_query(f"SELECT COUNT(*) FROM users WHERE id = \'{idval}\'")
+    if user_exist == 0: ### CORRECT THIS
+        return "user does not exist"
     else:
-        replace = request.form[f"\'{col_name}\'"]
-        query = f"UPDATE users SET \'{col_name}\' = \'{replace}\' WHERE id = \'{idval}\'"
-        inter.execute_query(query)
-        return True
+        replace = request.form[f"{col_name}"]
+        query = f"UPDATE users SET {col_name} = \'{replace}\' WHERE id = \'{idval}\'"
+        if inter.execute_query(query):
+            return "user updated"
+        else:
+            return "user failed to update"
 
 ### RECOVER ID ###
 # Uses user email to recover user attributes. This can be used
@@ -80,14 +94,14 @@ def update_user(col_name):
 @app.route('/identuser/', methods=['GET'])
 def identify_user():
     email = request.form['email']
-    resp = inter.execute_read_query("SELECT id FROM users WHERE email = \'{email}\'")
-    if not resp:
+    user_check = inter.execute_read_query(f"SELECT COUNT(*) FROM users WHERE email = \'{email}\'")
+    if user_check[0][0] == 0:
+        return "user does not exist"
+    else:
+        resp = inter.execute_read_query(f"SELECT id FROM users WHERE email = \'{email}\'")
         response = app.response_class(response=json.dumps(resp),
                                       status=200,
-                                      mimetype='application/json')
-        return response
-    else:
-        response = app.response_class(status=199)
+                                      mimetype='applications/json')
         return response
 
 @app.route('/validate/', methods=['POST'])
