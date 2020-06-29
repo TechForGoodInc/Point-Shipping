@@ -9,8 +9,9 @@ app = Flask(__name__)
 if __name__ == '__main__':
     app.run()
 
+
 ### TESTS ###
-@app.route('/')
+@app.route('/database/')
 def init():
     rqst = "SELECT * FROM users"
     resp = inter.execute_read_query(rqst)
@@ -18,16 +19,18 @@ def init():
                                  mimetype='application/json')
     return to_send
 
+
 ### GET, POST, AND DELETE ###
 # get recieves data, post sends data
 @app.route('/user/', methods=['GET', 'POST', 'DELETE'])
 def user():
     user_name = request.form['username']
-    if inter.user_exists(user_name) and request.method != 'DELETE':
-        return 'user already exists'
 
-    elif request.method == 'POST':
-        # used to generate the user id
+    if request.method == 'POST':
+        if inter.user_exists(user_name):
+            return 'user already exists'
+        # used to generate the user id (requires at least user
+        # id to already exist)
         max_id = inter.execute_query("SELECT MAX(id) FROM users")
         idval = max_id + 1
         firstname = request.form['firstname']
@@ -68,7 +71,9 @@ def user():
         # 200 = standard ok status, 400 = user did not exist (client error)
 
     elif request.method == 'DELETE':
-        query = "DELETE FROM users WHERE username = \'{user_name}\'"
+        if not inter.user_exists(user_name):
+            return 'user does not exist'
+        query = f"DELETE FROM users WHERE username = \'{user_name}\'"
         if inter.execute_query(query):
             return 'user deleted'
         else:
@@ -84,16 +89,16 @@ def user():
 @app.route('/usermod/<col_name>/', methods=['PUT'])
 def update_user(col_name):
     idval = request.form['id']
-    user_exist = inter.execute_query(f"SELECT COUNT(*) FROM users WHERE id = \'{idval}\'")
-    if user_exist == 0: ### CORRECT THIS
-        return "user does not exist"
-    else:
+    if inter.user_exists(idval, 'id'):
         replace = request.form[f"{col_name}"]
         query = f"UPDATE users SET {col_name} = \'{replace}\' WHERE id = \'{idval}\'"
         if inter.execute_query(query):
             return "user updated"
         else:
             return "user failed to update"
+    else:
+        return "user does not exist"
+
 
 ### RECOVER ID ###
 # Uses user email to recover user attributes. This can be used
@@ -101,43 +106,20 @@ def update_user(col_name):
 @app.route('/identuser/', methods=['GET'])
 def identify_user():
     email = request.form['email']
-    user_check = inter.execute_read_query(f"SELECT COUNT(*) FROM users WHERE email = \'{email}\'")
-    if user_check[0][0] == 0:
-        return "user does not exist"
-    else:
-        resp = inter.execute_read_query(f"SELECT id FROM users WHERE email = \'{email}\'")
-        response = app.response_class(response=json.dumps(resp),
+    if inter.user_exist(email, "email"):
+        resp = inter.execute_read_query(
+            f"SELECT id FROM users WHERE email = \'{email}\'")
+        response = app.response_class(response=json.dumps(resp[0][0]),
                                       status=200,
                                       mimetype='applications/json')
         return response
-
-@app.route('/validate/', methods=['POST'])
-def validate():
-    username = request.form['username']
-    query = f"SELECT pswd FROM users WHERE username = \'{username}\'"
-    resp = inter.execute_read_query(query)
-    if not resp:
-        response = app.response_class(response=json.dumps(resp),
-                                      status=200,
-                                      mimetype='application/json')
-        return response
     else:
-        return False
-
-@app.route('/authorize/', methods=['GET'])
-def authorize():
-    username = request.form['username']
-    query = f"SELECT pswd FROM users WHERE username = \'{username}\'"
-    resp = inter.execute_read_query(query)
-    if not resp:
         return "user does not exist"
-    else:
-        if request.form['password'] == resp:
-            return "pw verified"
-        else:
-            return "incorrect pw"
 
 
+### ADDS PACKAGE ###
+# requires full package information to create package object
+# through ezpost
 @app.route('/addpackage/', methods=['POST'])
 def addpackage(username):
 
@@ -167,7 +149,6 @@ def addpackage(username):
     i_weight = request.weight['weight']
     parcel = ez.Parcel.create(length=i_length, width=i_width,
                               height=i_height, weight=i_weight)
-    
     send_date = request.form['send_date']
 
     # price, service, carrier
@@ -175,6 +156,7 @@ def addpackage(username):
     shipment = ez.Shipment.create(parcelObj=parcel,
                                   to_address=toAddress,
                                   from_address=fromAddress)
+
     return shipment
 
 
@@ -188,3 +170,4 @@ def get_packages(userval):
 # return "ok"
 
 # requests.post
+
