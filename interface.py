@@ -41,16 +41,14 @@ def execute_query(query, arguments=None):
         print(f"The error '{e}' occurred")
         return False
 
+
 ### GET TABLE VALUES ###
 def execute_read_query(query, arguments=None):
     connection = create_connection()
     cursor = connection.cursor()
     result = None
     try:
-        if arguments is None:
-            cursor.execute(query)
-        else:
-            cursor.execute(query, arguments)
+        cursor.execute(query)
         result = cursor.fetchall()
         return result
     except OperationalError as e:
@@ -61,18 +59,25 @@ def execute_read_query(query, arguments=None):
 ### CHECK IF PASSWORDS MATCH ###
 # userpassword = b'text'
 def password_match(userid, input_password):
-    query = f"FROM users SELECT pswd WHERE id = \'{userid}\'"
+    query = f"SELECT password FROM users WHERE id = \'{userid}\'"
     current_password = execute_read_query(query)
-    return bcrypt.checkpw(current_password, input_password)
+    correct = current_password[0][0].encode("utf-8")
+    input_pw = input_password.encode("utf-8")
+    return bcrypt.checkpw(input_pw, correct)
 
 
 ### ENCRYPT PASSWORD ###
 def encrypt_password(password_input):
     byt_pswd = password_input.encode('utf-8')
     hashed = bcrypt.hashpw(byt_pswd, bcrypt.gensalt())
-    return hashed
+    hash_test = hashed.decode("utf-8")
+    return hashed.decode("utf-8")
 
 # for debugging: export FLASK_ENV=development
+
+
+# hash input password
+# get input, non-hashed pw and compare hash and regular password
 
 # in flask_app directory:
 # python3 -m venv venv

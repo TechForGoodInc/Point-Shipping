@@ -15,6 +15,8 @@ if __name__ == '__main__':
 def init():
     rqst = "SELECT * FROM users"
     resp = inter.execute_read_query(rqst)
+    label_rqst = "SELECT * FROM labels"
+    resp += inter.execute_read_query(label_rqst)
     to_send = app.response_class(response=json.dumps(resp), status=200,
                                  mimetype='application/json')
     return to_send
@@ -28,13 +30,12 @@ def user():
 
     if request.method == 'POST':
         if inter.user_exists(user_name):
-            return 'user already exists'
+            return app.response_class(status=409)
         # used to generate the user id (requires at least user
         # id to already exist)
-        max_id = inter.execute_query("SELECT MAX(id) FROM users")
+        max_id = 0
+        #max_id = inter.execute_query("SELECT MAX(id) FROM users")
         idval = max_id + 1
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
         email = request.form['email']
         sender_name = request.form['sender_name']
         sender_street = request.form['sender_street']
@@ -42,16 +43,18 @@ def user():
         sender_state = request.form['sender_state']
         sender_zip = request.form['sender_zip']
         sender_country = request.form['sender_country']
-        pswd = request.form['password']
+        ez_address_id = ez.get_address(sender_name, sender_street,
+                                       sender_city, sender_state,
+                                       sender_zip, sender_country)
+        unencrypted_pw = request.form['password']
+        encrypted = inter.encrypt_password(unencrypted_pw)
         # apostrophe escaped to work with SQL format
         query = f"""INSERT INTO users VALUES (\'{user_name}\', \'{idval}\',
-            \'{firstname}\', \'{lastname}\', \'{email}\', \'{sender_name}\',
-            \'{sender_street}\', \'{sender_city}\', \'{sender_state}\',
-            \'{sender_zip}\', \'{sender_country}\', \'{pswd}\')"""
+            \'{email}\', \'{ez_address_id}\', \'{encrypted}\')"""
         if inter.execute_query(query):
-            return "User added"
+            return app.response_class(status=200)
         else:
-            return "User not added"
+            return app.response_class(status=502)
 
     elif request.method == 'GET':
         query = f"SELECT * FROM users WHERE username = \'{user_name}\'"
@@ -63,24 +66,17 @@ def user():
                                           mimetype='application/json')
             return response
         else:
-            resp = 'user does not exist'
-            response = app.response_class(response=resp,
-                                          status=400,
-                                          mimetype='application/json')
-            return response
-        # 200 = standard ok status, 400 = user did not exist (client error)
+            return app.response_class(status=404)
 
     elif request.method == 'DELETE':
         if not inter.user_exists(user_name):
-            return 'user does not exist'
+            return app.response_class(status=404)
         query = f"DELETE FROM users WHERE username = \'{user_name}\'"
         if inter.execute_query(query):
-            return 'user deleted'
-        else:
-            return 'user deletion failed'
+            return app.response_class(status=200)
 
     else:
-        'unavailable request'
+        return app.response_class(status=400)
 
 
 ### MODIFY USER ###
@@ -93,11 +89,9 @@ def update_user(col_name):
         replace = request.form[f"{col_name}"]
         query = f"UPDATE users SET {col_name} = \'{replace}\' WHERE id = \'{idval}\'"
         if inter.execute_query(query):
-            return "user updated"
-        else:
-            return "user failed to update"
-    else:
-        return "user does not exist"
+            return app.response_class(status=200)
+
+    return app.response_class(status=404)
 
 
 ### RECOVER ID ###
@@ -114,14 +108,24 @@ def identify_user():
                                       mimetype='applications/json')
         return response
     else:
-        return "user does not exist"
+        return app.response_class(status=404)
+
+
+@app.route('/validate/', methods=['GET'])
+def validate():
+    userid = request.form['userid']
+    input_pw = request.form['password']
+    if inter.password_match(userid, input_pw):
+        return app.response_class(status=200)
+    else:
+        return app.response_class(status=406)
 
 
 ### ADDS PACKAGE ###
 # requires full package information to create package object
 # through ezpost
 @app.route('/addpackage/', methods=['POST'])
-def addpackage(username):
+def addpackage():
 
     userid = request.form['userid']
 
@@ -131,17 +135,11 @@ def addpackage(username):
     dest_state = request.form['dest_state']
     dest_zip = request.form['dest_zip']
     dest_country = request.form['dest_country']
-    toAddress = ez.get_to_address(dest_name, dest_street, dest_city,
-                                  dest_state, dest_zip, dest_country)
+    to_address = ez.get_address(dest_name, dest_street, dest_city,
+                                dest_state, dest_zip, dest_country)
 
-    from_name = request.form['from_name']
-    from_street = request.form['from_street']
-    from_city = request.form['from_city']
-    from_state = request.form['form_state']
-    from_zip = request.form['from_zip']
-    from_country = request.form['from_country']
-    fromAddress = ez.get_from_address(from_name, from_street, from_city,
-                                      from_state, from_zip, from_country)
+    query = f"SELECT ez_address_id FROM users WHERE id = \'{userid}\'"
+    user_addr = inter.execute_read_query(query)
 
     i_length = request.form['length']
     i_width = request.form['width']
@@ -153,17 +151,21 @@ def addpackage(username):
 
     # price, service, carrier
 
+    # STILL NEED TO ADD PACKAGE TO DATABASE
     shipment = ez.Shipment.create(parcelObj=parcel,
-                                  to_address=toAddress,
-                                  from_address=fromAddress)
+                                  to_address=user_addr,
+                                  from_address=to_address)
 
-    return shipment
+    return "done"
 
 
 @app.route('/previouspackages/<userval>/', methods=['GET'])
 def get_packages(userval):
     query = f"SELECT * FROM labels WHERE userid = \'{userval}\'"
-    return inter.execute_query(query)
+    resp = inter.execute_read_query(query)
+    response = app.response_class(response=json.dumps(resp), status=200,
+                                  mimetype='application/json')
+    return response
 
 # user checked out and paid for package
 # send post request with new shipping label info and username
