@@ -1,11 +1,13 @@
 import psycopg2
 from psycopg2 import OperationalError
+import bcrypt
+import base64
 
 
 ### CHECK IF USER EXISTS ###
-def user_exists(user_name):
+def user_exists(userid, column_name="username"):
     user_exist = execute_read_query(
-        f"SELECT COUNT(*) FROM users WHERE username = \'{user_name}\'")
+        f"SELECT COUNT(*) FROM users WHERE {column_name} = \'{userid}\'")
     exist_check = user_exist[0][0]
     return exist_check > 0
 
@@ -56,6 +58,20 @@ def execute_read_query(query, arguments=None):
         return False
 
 
+### CHECK IF PASSWORDS MATCH ###
+# userpassword = b'text'
+def password_match(userid, input_password):
+    query = f"FROM users SELECT pswd WHERE id = \'{userid}\'"
+    current_password = execute_read_query(query)
+    return bcrypt.checkpw(current_password, input_password)
+
+
+### ENCRYPT PASSWORD ###
+def encrypt_password(password_input):
+    byt_pswd = password_input.encode('utf-8')
+    hashed = bcrypt.hashpw(byt_pswd, bcrypt.gensalt())
+    return hashed
+
 # for debugging: export FLASK_ENV=development
 
 # in flask_app directory:
@@ -65,6 +81,7 @@ def execute_read_query(query, arguments=None):
 # pip3 install flask
 # pip3 install requests
 # pip3 install psycopg2-binary
+# pip3 install bcrypt
 
 # to run:
 # export FLASK_APP=server.py
