@@ -31,16 +31,33 @@ modify_false = {'id': 50, 'email': 'nobody@gmail.com'}
 # use requests.get('http://127.0.0.1:5000/checkident/', data=input_email)
 input_email = {'email': 'tellabella@aol.com'}
 
-# test shipping capabilities
+# test shipping capabilities: true does not return error, false returns error
 # requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input)
-shipping_input = {'userid': 1, 'dest_name': '1234', 'dest_street': '19th Ave',
-                  'dest_city': 'Santa Fe', 'dest_state': 'New Mexico',
-                  'dest_zip': '87501', 'dest_country': 'USA', 'length': 12,
-                  'width': 6.5, 'height': 12.22, 'weight': 15}
+shipping_input_true = {'userid': 1, 'dest_name': 'Mr. Reciever',
+                       'dest_street': '1115 8th Ave', 'dest_city': 'Grinnell',
+                       'dest_state': 'Iowa', 'dest_zip': '50112',
+                       'dest_country': 'USA', 'length': 12, 'width': 6.5,
+                       'height': 12.22, 'weight': 15}
+
+shipping_input_false = {'userid': 1, 'dest_name': 'Miss Nobody',
+                        'dest_street': '4444 444th Ave', 'dest_city': 'Santa Fe',
+                        'dest_state': 'New Mexico', 'dest_zip': '44444',
+                        'dest_country': 'USA', 'length': 12, 'width': 6.5,
+                        'height': 12.22, 'weight': 15}
 
 # test password validation
 # requests.get('http://127.0.0.1:5000/validate/)
 # returns 200 if passwords match, 406 if not
 validate_user = {'userid': 1, 'password': 't00nafEEsh!11'}
 
-requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input)
+
+# get each user package in the form of a list of dictionaries
+# when retrieving each package, use response.json()[0] or the
+# flutter equivalent
+# requests.get('http://127.0.0.1:5000/previouspackages/', data=user_packages_true)
+# shoul return dict object, data=user_packages_false should not
+user_packages_true = {'id': 1}
+user_packages_false = {'id': 2}
+
+
+
