@@ -142,12 +142,18 @@ def addpackage():
 
     query = f"SELECT ez_address_id FROM users WHERE id = \'{userid}\'"
     user_addr = inter.execute_read_query(query)
-
-    i_length = request.form['length']
-    i_width = request.form['width']
-    i_height = request.form['height']
     i_weight = request.form['weight']
-    parcel = ez.create_parcel(i_length, i_width, i_height, i_weight)
+    try:
+        i_length = request.form['length']
+        i_width = request.form['width']
+        i_height = request.form['height']
+        parcel = ez.create_parcel(i_length, i_width, i_height, i_weight)
+    except KeyError:
+        try:
+            flat_rate = request.form['predefined_package']
+            parcel = ez.create_flat_rate_parcel(flat_rate, i_weight)
+        except KeyError:
+            return app.response_class(status=400)
 
     shipment = ez.create_shipment(parcel, to_address, user_addr)
     add_query = f"INSERT INTO labels (userid, shipment) VALUES (\'{userid}\', \'{shipment}\')"

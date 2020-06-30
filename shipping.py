@@ -21,6 +21,12 @@ def create_parcel(length, width, height, weight):
     return parcel
 
 
+def create_flat_rate_parcel(predef, weight):
+    parcel = easypost.Parcel.create(predefined_package=predef,
+                                    weight=weight)
+    return parcel
+
+
 def create_shipment(parcel, to_addr, sender_addr):
     shipment = easypost.Shipment.create(parcelObj=parcel,
                                         to_address=to_addr,
