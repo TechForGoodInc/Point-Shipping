@@ -35,14 +35,12 @@ input_email = {'email': 'tellabella@aol.com'}
 # requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input)
 shipping_input = {'userid': 1, 'dest_name': '1234', 'dest_street': '19th Ave',
                   'dest_city': 'Santa Fe', 'dest_state': 'New Mexico',
-                  'dest_zip': '87501', 'dest_country': 'USA', 'i_length': 12,
-                  'i_width': 6.5, 'i_height': 12.22, 'i_weight': 15,
-                  'send_date': '2020/06/30'}
+                  'dest_zip': '87501', 'dest_country': 'USA', 'length': 12,
+                  'width': 6.5, 'height': 12.22, 'weight': 15}
 
 # test password validation
 # requests.get('http://127.0.0.1:5000/validate/)
 # returns 200 if passwords match, 406 if not
 validate_user = {'userid': 1, 'password': 't00nafEEsh!11'}
 
-requests.get('http://127.0.0.1:5000/validate/', data=validate_user)
-
+requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input)

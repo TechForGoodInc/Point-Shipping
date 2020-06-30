@@ -13,3 +13,14 @@ def get_address(i_name, i_street, i_city, i_state, i_zip, i_country,
     return addr
 
 
+def create_parcel(length, width, height, weight):
+    parcel = easypost.Parcel.create(length=length, width=width,
+                                    height=height, weight=weight)
+    return parcel
+
+
+def create_shipment(parcel, to_addr, sender_addr):
+    shipment = easypost.Shipment.create(parcelObj=parcel,
+                                        to_address=to_addr,
+                                        from_address=sender_addr)
+
