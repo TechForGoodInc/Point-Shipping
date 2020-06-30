@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, json
 import requests
 import interface as inter
 import shipping as ez
+import ast
 
 ### BASIC INITIALIATION ###
 app = Flask(__name__)
@@ -52,7 +53,7 @@ def user():
         query = f"""INSERT INTO users VALUES (\'{user_name}\', \'{idval}\',
             \'{email}\', \'{ez_address_id}\', \'{encrypted}\')"""
         if inter.execute_query(query):
-            return app.response_class(status=200)
+            return app.response_class(status=201)
         else:
             return app.response_class(status=502)
 
@@ -136,6 +137,8 @@ def addpackage():
     dest_country = request.form['dest_country']
     to_address = ez.get_address(dest_name, dest_street, dest_city,
                                 dest_state, dest_zip, dest_country)
+    if to_address is False:
+        return app.response_class(status=401)
 
     query = f"SELECT ez_address_id FROM users WHERE id = \'{userid}\'"
     user_addr = inter.execute_read_query(query)
@@ -148,21 +151,30 @@ def addpackage():
 
     shipment = ez.create_shipment(parcel, to_address, user_addr)
     add_query = f"INSERT INTO labels (userid, shipment) VALUES (\'{userid}\', \'{shipment}\')"
+    if inter.execute_query(add_query):
+        return app.response_class(status=201)
+    else:
+        return app.response_class(status=401)
 
-    return app.response_class(status=200)
 
-
-@app.route('/previouspackages/<userval>/', methods=['GET'])
-def get_packages(userval):
-    query = f"SELECT * FROM labels WHERE userid = \'{userval}\'"
+@app.route('/previouspackages/', methods=['GET'])
+def get_packages():
+    user_id = request.form['id']
+    query = f"SELECT * FROM labels WHERE userid = \'{user_id}\'"
     resp = inter.execute_read_query(query)
-    response = app.response_class(response=json.dumps(resp), status=200,
-                                  mimetype='application/json')
-    return response
+    if not resp and len(resp) > 0:
+        dict_list = []
+        for val in resp:
+            dict_list.append(json.loads(val[1]))
+        response = app.response_class(response=json.dumps(dict_list),
+                                      status=200, mimetype='application/json')
+        return response
+    elif not resp and len(resp) == 0:
+        return app.response_class(status=404)
+    else:
+        return app.response_class(status=400)
 
 # user checked out and paid for package
 # send post request with new shipping label info and username
 # return "ok"
-
-# requests.post
 
