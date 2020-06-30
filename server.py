@@ -59,7 +59,6 @@ def user():
     elif request.method == 'GET':
         query = f"SELECT * FROM users WHERE username = \'{user_name}\'"
         resp = inter.execute_read_query(query)
-        print(resp)
         if resp:
             response = app.response_class(response=json.dumps(resp),
                                           status=200,
@@ -143,20 +142,14 @@ def addpackage():
 
     i_length = request.form['length']
     i_width = request.form['width']
-    i_height = request.height['height']
-    i_weight = request.weight['weight']
-    parcel = ez.Parcel.create(length=i_length, width=i_width,
-                              height=i_height, weight=i_weight)
-    send_date = request.form['send_date']
+    i_height = request.form['height']
+    i_weight = request.form['weight']
+    parcel = ez.create_parcel(i_length, i_width, i_height, i_weight)
 
-    # price, service, carrier
+    shipment = ez.create_shipment(parcel, to_address, user_addr)
+    add_query = f"INSERT INTO labels (userid, shipment) VALUES (\'{userid}\', \'{shipment}\')"
 
-    # STILL NEED TO ADD PACKAGE TO DATABASE
-    shipment = ez.Shipment.create(parcelObj=parcel,
-                                  to_address=user_addr,
-                                  from_address=to_address)
-
-    return "done"
+    return app.response_class(status=200)
 
 
 @app.route('/previouspackages/<userval>/', methods=['GET'])
