@@ -32,4 +32,26 @@ def create_shipment(parcel, to_addr, sender_addr):
                                         to_address=to_addr,
                                         from_address=sender_addr)
     return shipment
+#will print shipping rates of carriers
 
+def shippingRates(to_address,fromAddress,parcel):
+    shipment = easypost.Shipment.create(
+        to_address=to_address,
+        from_address=fromAddress,
+        parcel=parcel)
+
+    for rate in shipment.rates:
+        print(rate.carrier)
+        print(rate.service)
+        print(rate.rate)
+        print(rate.id)
+    return rate
+
+#list all availabe carrier
+
+def typesOfCarrier():
+    carrier_types = easypost.CarrierAccount.types()
+    return carrier_types
+#I am still working on how to connect the two methods so that a user can select his option from the list created
+    
+    
