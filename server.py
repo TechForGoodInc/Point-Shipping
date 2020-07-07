@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, json
 import requests
 import interface as inter
 import shipping as ez
-import ast
 
 ### BASIC INITIALIATION ###
 app = Flask(__name__)
@@ -26,7 +25,7 @@ def init():
 
 ### GET, POST, AND DELETE ###
 # get recieves data, post sends data
-@app.route('/user/', methods=['GET', 'POST', 'DELETE'])
+@app.route('/user/', methods=['POST', 'DELETE'])
 def user():
     user_name = request.form['username']
 
@@ -58,17 +57,6 @@ def user():
         else:
             return app.response_class(status=502)
 
-    elif request.method == 'GET':
-        query = f"SELECT * FROM users WHERE username = \'{user_name}\'"
-        resp = inter.execute_read_query(query)
-        if resp:
-            response = app.response_class(response=json.dumps(resp),
-                                          status=200,
-                                          mimetype='application/json')
-            return response
-        else:
-            return app.response_class(status=404)
-
     elif request.method == 'DELETE':
         if not inter.user_exists(user_name):
             return app.response_class(status=404)
@@ -98,9 +86,8 @@ def update_user(col_name):
 ### RECOVER ID ###
 # Uses user email to recover user attributes. This can be used
 # in tandem with the update_user method which takes a user id
-@app.route('/identuser/', methods=['GET'])
-def identify_user():
-    email = request.form['email']
+@app.route('/identuser/<email>', methods=['GET'])
+def identify_user(email):
     if inter.user_exist(email, "email"):
         resp = inter.execute_read_query(
             f"SELECT id FROM users WHERE email = \'{email}\'")
@@ -112,12 +99,21 @@ def identify_user():
         return app.response_class(status=404)
 
 
-@app.route('/validate/', methods=['GET'])
+@app.route('/validate/', methods=['POST'])
 def validate():
-    userid = request.form['userid']
+    username = request.form['username']
     input_pw = request.form['password']
-    if inter.password_match(userid, input_pw):
-        return app.response_class(status=200)
+    if inter.password_match(username, input_pw):
+        query = f"SELECT * FROM users WHERE username = \'{username}\'"
+        resp = inter.execute_read_query(query)
+        print(resp)
+        if resp:
+            response = app.response_class(response=json.dumps(resp),
+                                          status=200,
+                                          mimetype='application/json')
+            return response
+        else:
+            return app.response_class(status=404)
     else:
         return app.response_class(status=406)
 
@@ -157,6 +153,7 @@ def addpackage():
             return app.response_class(status=400)
 
     shipment = ez.create_shipment(parcel, to_address, user_addr)
+    #print(ez.get_rates(shipment))
     add_query = f"INSERT INTO labels (userid, shipment) VALUES (\'{userid}\', \'{shipment}\')"
     if inter.execute_query(add_query):
         return app.response_class(status=201)
@@ -164,12 +161,11 @@ def addpackage():
         return app.response_class(status=401)
 
 
-@app.route('/previouspackages/', methods=['GET'])
-def get_packages():
-    user_id = request.form['id']
-    query = f"SELECT * FROM labels WHERE userid = \'{user_id}\'"
+@app.route('/postpackages/<userid>/', methods=['POST'])
+def post_packages(userid):
+    query = f"SELECT * FROM labels WHERE userid = \'{userid}\'"
     resp = inter.execute_read_query(query)
-    if not resp and len(resp) > 0:
+    if resp and len(resp) > 0:
         dict_list = []
         for val in resp:
             dict_list.append(json.loads(val[1]))

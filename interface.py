@@ -1,7 +1,6 @@
 import psycopg2
 from psycopg2 import OperationalError
 import bcrypt
-import base64
 
 
 ### CHECK IF USER EXISTS ###
@@ -17,7 +16,7 @@ def create_connection():
     connection = None
     try:
         connection = psycopg2.connect(database="postgres", user="postgres",
-                                      password="Pointshipping12", host="127.0.0.1",
+                                      host="127.0.0.1",
                                       port="5432")
         print("Connection to PostgreSQL DB successful")
     except OperationalError as e:
@@ -58,8 +57,8 @@ def execute_read_query(query, arguments=None):
 
 ### CHECK IF PASSWORDS MATCH ###
 # userpassword = b'text'
-def password_match(userid, input_password):
-    query = f"SELECT password FROM users WHERE id = \'{userid}\'"
+def password_match(username, input_password):
+    query = f"SELECT password FROM users WHERE username = \'{username}\'"
     current_password = execute_read_query(query)
     correct = current_password[0][0].encode("utf-8")
     input_pw = input_password.encode("utf-8")
@@ -91,4 +90,10 @@ def encrypt_password(password_input):
 # to run:
 # export FLASK_APP=server.py
 # flask run
+
+# sudo -i brings you to root directory
+
+# AzureUser@52.188.71.21
+# Pointshipping12
+# sudo ssh -i /Users/emilylouden/Desktop/flask_app/.ssh/id_rsa AzureUser@52.188.71.21
 

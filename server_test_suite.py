@@ -37,7 +37,7 @@ shipping_input_parcel = {'userid': 1, 'dest_name': 'Mr. Reciever',
                          'dest_street': '1115 8th Ave', 'dest_city':
                          'Grinnell', 'dest_state': 'Iowa', 'dest_zip': '50112',
                          'dest_country': 'USA', 'length': 12, 'width': 6.5,
-                         'height': 12.22, 'weight': 15}
+                         'height': 12.5, 'weight': 15}
 
 shipping_input_flat_rate = {'userid': 1, 'dest_name': 'Mr. Reciever',
                             'dest_street': '1115 8th Ave', 'dest_city':
@@ -53,18 +53,21 @@ shipping_input_false = {'userid': 1, 'dest_name': 'Miss Nobody',
                         6.5, 'height': 12.22, 'weight': 15}
 
 # test password validation
-# requests.get('http://127.0.0.1:5000/validate/)
+# requests.post('http://127.0.0.1:5000/validate/', validate_user)
 # returns 200 if passwords match, 406 if not
-validate_user = {'userid': 1, 'password': 't00nafEEsh!11'}
+validate_user = {'username': 'donatellaversace', 'password': 't00nafEEsh!11'}
 
 
 # get each user package in the form of a list of dictionaries
 # when retrieving each package, use response.json()[0] or the
 # flutter equivalent
-# requests.get('http://127.0.0.1:5000/previouspackages/',
-# data=user_packages_true)
+# requests.post('http://127.0.0.1:5000/previouspackages/1/')
 # shoul return dict object, data=user_packages_false should not
 user_packages_true = {'id': 1}
 user_packages_false = {'id': 2}
 
-requests.post('http://127.0.0.1:5000/user/', data = input_user)
+# requests.post('http://127.0.0.1:5000/user/', data=input_user)
+resp = requests.post('http://127.0.0.1:5000/addpackage/',
+                     data=shipping_input_parcel)
+print(resp.content)
+
