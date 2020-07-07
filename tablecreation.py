@@ -19,8 +19,17 @@ CREATE TABLE IF NOT EXISTS labels (
 )
 """
 
-# print(inter.execute_query("DROP TABLE users"))
-# print(inter.execute_query("DROP TABLE labels"))
+#create_photo_table = """
+#CREATE TABLE IF NOT EXISTS photos (
+#  pic VARBINARY(MAX),
+#  userid INTEGER
+#  )
+#"""
+
+#print(inter.execute_query("DROP TABLE users"))
+#print(inter.execute_query("DROP TABLE labels"))
+#print(inter.execute_query("DROP TABLE photos"))
 print(inter.execute_query(create_users_table))
 print(inter.execute_query(create_label_table))
+#print(inter.execute_query(create_photo_table))
 
