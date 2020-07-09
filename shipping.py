@@ -60,11 +60,14 @@ def selectionOfCarrier():
 
     print(carriers)
     
-    #allows a user to select a carrier
+  #allows a user to select a carrier
+
     
-    selection={'userid': easypost.CarrierAccount.get('type')}
-
-    return selection.get('userid')
-
+    while True:
+        readable=input()
+        if readable in easypost.CarrierAccount.keys():
+            print("You selected: "+ readable)
+        else:
+            print('invalid choice')
     
     
