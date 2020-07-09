@@ -27,32 +27,34 @@ def create_connection():
 ### SQL QUERY ###
 def execute_query(query, arguments=None):
     connection = create_connection()
-    cursor = connection.cursor()
-    try:
-        if arguments is None:
-            cursor.execute(query)
-        else:
-            cursor.execute(query, arguments)
-        connection.commit()
-        print("Query executed successfully")
-        return True
-    except OperationalError as e:
-        print(f"The error '{e}' occurred")
-        return False
+    with connection:
+        try:
+            cursor = connection.cursor()
+            if arguments is None:
+                cursor.execute(query)
+            else:
+                cursor.execute(query, arguments)
+            connection.commit()
+            print("Query executed successfully")
+            return True
+        except OperationalError as e:
+            print(f"The error '{e}' occurred")
+            return False
 
 
 ### GET TABLE VALUES ###
 def execute_read_query(query, arguments=None):
     connection = create_connection()
-    cursor = connection.cursor()
     result = None
-    try:
-        cursor.execute(query)
-        result = cursor.fetchall()
-        return result
-    except OperationalError as e:
-        print(f"The error '{e}' occurred")
-        return False
+    with connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute(query)
+            result = cursor.fetchall()
+            return result
+        except OperationalError as e:
+            print(f"The error '{e}' occurred")
+            return False
 
 
 ### CHECK IF PASSWORDS MATCH ###
