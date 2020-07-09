@@ -52,6 +52,6 @@ def shippingRates(to_address,fromAddress,parcel):
 def typesOfCarrier():
     carrier_types = easypost.CarrierAccount.types()
     return carrier_types
-#I am still working on how to connect the two methods so that a user can select his option from the list created
+
     
     
