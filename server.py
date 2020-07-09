@@ -89,7 +89,7 @@ def update_user(col_name):
 # in tandem with the update_user method which takes a user id
 @app.route('/identuser/<email>', methods=['GET'])
 def identify_user(email):
-    if inter.user_exist(email, "email"):
+    if inter.user_exists(email, "email"):
         resp = inter.execute_read_query(
             f"SELECT id FROM users WHERE email = \'{email}\'")
         response = app.response_class(response=json.dumps(resp[0][0]),
