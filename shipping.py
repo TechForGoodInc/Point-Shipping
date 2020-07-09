@@ -66,7 +66,7 @@ def selectionOfCarrier():
     while True:
         readable=input()
         if readable in easypost.CarrierAccount.keys():
-            print("You selected: "+ readable)
+            print("You selected: "+ easypost.CarrierAccount.value())
         else:
             print('invalid choice')
     
