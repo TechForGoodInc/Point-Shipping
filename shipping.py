@@ -47,11 +47,24 @@ def shippingRates(to_address,fromAddress,parcel):
         print(rate.id)
     return rate
 
-#list all availabe carrier
 
-def typesOfCarrier():
-    carrier_types = easypost.CarrierAccount.types()
-    return carrier_types
+# list all availabe carrier/ and user selects one favorable carrier.
+
+def selectionOfCarrier():
+    
+    #will return value of readable, which is the name of the carrier
+    
+    carriers = easypost.CarrierAccount.get('readable')
+
+    # print list of carriers' names
+
+    print(carriers)
+    
+    #allows a user to select a carrier
+    
+    selection={'userid': easypost.CarrierAccount.get('type')}
+
+    return selection.get('userid')
 
     
     
