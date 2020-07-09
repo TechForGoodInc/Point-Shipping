@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, json
+from flask_cors import CORS
 import requests
 import interface as inter
 import shipping as ez
