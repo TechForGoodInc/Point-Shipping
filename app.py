@@ -50,9 +50,9 @@ def user():
                                        sender_zip, sender_country)
         unencrypted_pw = request.form['password']
         encrypted = inter.encrypt_password(unencrypted_pw)
-        # apostrophe escaped to work with SQL format
-        query = f"INSERT INTO users VALUES (\'{user_name}\', \'{idval}\', "
-        query += f"\'{email}\', \'{ez_address_id}\', \'{encrypted}\')"
+        quer1 = f"INSERT INTO users VALUES (\'{user_name}\', \'{idval}\',"
+        quer2 = f"\'{email}\', \'{ez_address_id}\', \'{encrypted}\')"
+        query = " ".join(quer1, quer2)
         if inter.execute_query(query):
             return app.response_class(status=201)
         else:
