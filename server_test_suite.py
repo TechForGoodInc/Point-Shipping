@@ -70,3 +70,4 @@ requests.post('http://127.0.0.1:5000/user/', data=input_user)
 resp = requests.post('http://127.0.0.1:5000/addpackage/',
                      data=shipping_input_flat_rate)
 print(resp.content)
+
