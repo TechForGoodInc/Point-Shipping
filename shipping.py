@@ -1,7 +1,7 @@
 import easypost
 from easypost import Address
 
-easypost.api_key = "EZTK6acab147147b466d9f28b4b65e1b8191Q1a3j4lvc4HbVNU100jp8g"
+easypost.api_key = "EZAK6acab147147b466d9f28b4b65e1b8191pyE27NFXIF2v3gafaDAlcA"
 
 
 def get_address(i_name, i_street, i_city, i_state, i_zip, i_country,
@@ -32,7 +32,15 @@ def create_shipment(parcel, to_addr, sender_addr):
                                         to_address=to_addr,
                                         from_address=sender_addr)
     return shipment
-#will print shipping rates of carriers
+
+
+def get_rates(shipment):
+    to_ret = []
+    print(shipment.rates)
+    for rate in shipment.rates:
+        to_ret.append(rate)
+    return to_ret
+
 
 def shippingRates(to_address,fromAddress,parcel):
     shipment = easypost.Shipment.create(

@@ -51,7 +51,7 @@ def user():
         unencrypted_pw = request.form['password']
         encrypted = inter.encrypt_password(unencrypted_pw)
         # apostrophe escaped to work with SQL format
-        query = f"INSERT INTO users VALUES (\'{user_name}\', \'{idval}\',"
+        query = f"INSERT INTO users VALUES (\'{user_name}\', \'{idval}\', "
         query += f"\'{email}\', \'{ez_address_id}\', \'{encrypted}\')"
         if inter.execute_query(query):
             return app.response_class(status=201)
@@ -127,14 +127,9 @@ def addpackage():
 
     userid = request.form['userid']
 
-    dest_name = request.form['dest_name']
-    dest_street = request.form['dest_street']
-    dest_city = request.form['dest_city']
-    dest_state = request.form['dest_state']
-    dest_zip = request.form['dest_zip']
-    dest_country = request.form['dest_country']
-    to_address = ez.get_address(dest_name, dest_street, dest_city,
-                                dest_state, dest_zip, dest_country)
+    to_address = ez.get_address(request.form['dest_name'], request.form['dest_street'],
+                                request.form['dest_city'], request.form['dest_state'],
+                                request.form['dest_zip'], request.form['dest_country'])
     if to_address is False:
         return app.response_class(status=401)
 
@@ -142,10 +137,8 @@ def addpackage():
     user_addr = inter.execute_read_query(query)
     i_weight = request.form['weight']
     try:
-        i_length = request.form['length']
-        i_width = request.form['width']
-        i_height = request.form['height']
-        parcel = ez.create_parcel(i_length, i_width, i_height, i_weight)
+        parcel = ez.create_parcel(request.form['length'], request.form['width'],
+                                  request.form['height'], i_weight)
     except KeyError:
         try:
             flat_rate = request.form['predefined_package']
@@ -154,7 +147,8 @@ def addpackage():
             return app.response_class(status=400)
 
     shipment = ez.create_shipment(parcel, to_address, user_addr)
-    #print(ez.get_rates(shipment))
+    print(shipment.rates)
+    ez.get_rates(shipment)
     add_query = f"INSERT INTO labels (userid, shipment) VALUES (\'{userid}\', \'{shipment}\')"
     if inter.execute_query(add_query):
         return app.response_class(status=201)
@@ -181,4 +175,5 @@ def post_packages(userid):
 # user checked out and paid for package
 # send post request with new shipping label info and username
 # return "ok"
+
 

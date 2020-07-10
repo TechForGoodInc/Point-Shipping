@@ -8,6 +8,12 @@ input_user = {'username': 'donatellaversace', 'email': 'tellabella@aol.com',
               'sender_zip': 98115, 'sender_country': 'USA', 'password':
               't00nafEEsh!11'}
 
+# returns valid user
+# use requests.get('http://127.0.0.1:5000/user/', data = input_user)
+input_user_true = {'username': 'donatellaversace'}
+# returns 'user does not exist'
+input_user_false = {'username': 'douglasfur'}
+
 # deletes user (make sure user has been created first)
 # requests.delete('http://127.0.0.1:5000/user/', data = input_user_delete)
 # requests.get('http://127.0.0.1:5000/user/', data = input_user_delete)
@@ -22,7 +28,7 @@ modify_password = {'id': 1, 'password': 'jellybelly99'}
 modify_false = {'id': 50, 'email': 'nobody@gmail.com'}
 
 # get user id, returns '1'
-# use requests.get('http://127.0.0.1:5000/identuser/', data=input_email)
+# use requests.get('http://127.0.0.1:5000/checkident/', data=input_email)
 input_email = {'email': 'tellabella@aol.com'}
 
 # test shipping capabilities: true does not return error, false returns error
@@ -60,12 +66,7 @@ validate_user = {'username': 'donatellaversace', 'password': 't00nafEEsh!11'}
 user_packages_true = {'id': 1}
 user_packages_false = {'id': 2}
 
-#resp = requests.post('http://127.0.0.1:5000/user/', data=input_user)
-#resp = requests.post('http://127.0.0.1:5000/addpackage/',
-#                     data=shipping_input_parcel)
-#resp = requests.delete('http://127.0.0.1:5000/user/', data=input_user_delete)
-#resp = requests.put('http://127.0.0.1:5000/usermod/email', data=modify_false)
-#resp = requests.get('http://127.0.0.1:5000/identuser/tellybelly@aol.com')
-resp = requests.post('http://127.0.0.1:5000/validate', data=validate_user)
+requests.post('http://127.0.0.1:5000/user/', data=input_user)
+resp = requests.post('http://127.0.0.1:5000/addpackage/',
+                     data=shipping_input_flat_rate)
 print(resp.content)
-
