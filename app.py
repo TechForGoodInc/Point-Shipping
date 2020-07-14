@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, json
 from flask_cors import CORS
 import requests
 import interface as inter
-import shipping as ez
+import shipping as ship
 
 ### BASIC INITIALIATION ###
 app = Flask(__name__)
@@ -45,14 +45,13 @@ def user():
         sender_state = request.form['sender_state']
         sender_zip = request.form['sender_zip']
         sender_country = request.form['sender_country']
-        ez_address_id = ez.get_address(sender_name, sender_street,
-                                       sender_city, sender_state,
-                                       sender_zip, sender_country)
         unencrypted_pw = request.form['password']
         encrypted = inter.encrypt_password(unencrypted_pw)
         quer1 = f"INSERT INTO users VALUES (\'{user_name}\', \'{idval}\',"
-        quer2 = f"\'{email}\', \'{ez_address_id}\', \'{encrypted}\')"
-        query = " ".join(quer1, quer2)
+        quer2 = f"\'{email}\', \'{sender_name}\', \'{sender_street}\',"
+        quer3 = f"\'{sender_city}\', \'{sender_state}\', \'{sender_zip}\',"
+        quer4 = f"\'{sender_country}\', \'{encrypted}\')"
+        query = " ".join([quer1, quer2, quer3, quer4])
         if inter.execute_query(query):
             return app.response_class(status=201)
         else:
@@ -126,35 +125,22 @@ def validate():
 def addpackage():
 
     userid = request.form['userid']
-
-    to_address = ez.get_address(request.form['dest_name'], request.form['dest_street'],
-                                request.form['dest_city'], request.form['dest_state'],
-                                request.form['dest_zip'], request.form['dest_country'])
-    if to_address is False:
-        return app.response_class(status=401)
-
-    query = f"SELECT ez_address_id FROM users WHERE id = \'{userid}\'"
-    user_addr = inter.execute_read_query(query)
-    i_weight = request.form['weight']
-    try:
-        parcel = ez.create_parcel(request.form['length'], request.form['width'],
-                                  request.form['height'], i_weight)
-    except KeyError:
-        try:
-            flat_rate = request.form['predefined_package']
-            parcel = ez.create_flat_rate_parcel(flat_rate, i_weight)
-        except KeyError:
-            return app.response_class(status=400)
-
-    shipment = ez.create_shipment(parcel, to_address, user_addr)
-    print(shipment.rates)
-    ez.get_rates(shipment)
-    add_query = f"INSERT INTO labels (userid, shipment) VALUES (\'{userid}\', \'{shipment}\')"
-    if inter.execute_query(add_query):
-        return app.response_class(status=201)
-    else:
-        return app.response_class(status=401)
-
+    resp = ship.create_shipment(userid, request.form['dest_name'],
+                                request.form['dest_add1'],
+                                request.form['dest_add2'],
+                                request.form['dest_city'],
+                                request.form['dest_state'],
+                                request.form['dest_zip'],
+                                request.form['dest_country'],
+                                request.form['dest_phone'],
+                                request.form['item_description'],
+                                request.form['weight'], request.form['height'],
+                                request.form['width'], request.form['length'],
+                                request.form['category'],
+                                request.form['currency'],
+                                request.form['customs_val'])
+    print(resp)
+    return app.response_class(status=200)
 
 @app.route('/postpackages/<userid>/', methods=['POST'])
 def post_packages(userid):
@@ -175,6 +161,3 @@ def post_packages(userid):
 # user checked out and paid for package
 # send post request with new shipping label info and username
 # return "ok"
-
-
-

@@ -33,24 +33,14 @@ input_email = {'email': 'tellabella@aol.com'}
 
 # test shipping capabilities: true does not return error, false returns error
 # requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input)
-shipping_input_parcel = {'userid': 1, 'dest_name': 'Mr. Reciever',
-                         'dest_street': '1115 8th Ave', 'dest_city':
-                         'Grinnell', 'dest_state': 'Iowa', 'dest_zip': '50112',
-                         'dest_country': 'USA', 'length': 12, 'width': 6.5,
-                         'height': 12.5, 'weight': 15}
-
-shipping_input_flat_rate = {'userid': 1, 'dest_name': 'Mr. Reciever',
-                            'dest_street': '1115 8th Ave', 'dest_city':
-                            'Grinnell', 'dest_state': 'Iowa', 'dest_zip':
-                            '50112', 'dest_country': 'USA',
-                            'predefined_package': 'FlatRateEnvelope',
-                            'weight': 15}
-
-shipping_input_false = {'userid': 1, 'dest_name': 'Miss Nobody',
-                        'dest_street': '4444 444th Ave', 'dest_city':
-                        'Santa Fe', 'dest_state': 'New Mexico', 'dest_zip':
-                        '44444', 'dest_country': 'USA', 'length': 12, 'width':
-                        6.5, 'height': 12.22, 'weight': 15}
+shipping_input_true = {'userid': 1, 'dest_name': 'Mr. Reciever',
+                       'dest_add1': '1115 8th Ave', 'dest_add2': '',
+                       'dest_city': 'Grinnell', 'dest_state': 'Iowa',
+                       'dest_zip': '50112', 'dest_country': 'USA',
+                       'dest_phone': '+1 206-867-5309', 'item_description':
+                       'cat rain boots', 'weight': 15, 'height': 12.5,
+                       'width': 6.5, 'length': 12, 'category': 'clothing',
+                       'currency': 'USD', 'customs_val': 35}
 
 # test password validation
 # requests.post('http://127.0.0.1:5000/validate/', validate_user)
@@ -66,8 +56,7 @@ validate_user = {'username': 'donatellaversace', 'password': 't00nafEEsh!11'}
 user_packages_true = {'id': 1}
 user_packages_false = {'id': 2}
 
-requests.post('http://127.0.0.1:5000/user/', data=input_user)
+#requests.post('http://127.0.0.1:5000/user/', data=input_user)
 resp = requests.post('http://127.0.0.1:5000/addpackage/',
-                     data=shipping_input_flat_rate)
+                     data=shipping_input_true)
 print(resp.content)
-

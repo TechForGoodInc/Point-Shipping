@@ -5,7 +5,12 @@ CREATE TABLE IF NOT EXISTS users (
   username TEXT NOT NULL,
   id INTEGER,
   email TEXT NOT NULL,
-  ez_address_id VARCHAR,
+  sender TEXT NOT NULL,
+  street VARCHAR,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  zip INTEGER,
+  country TEXT NOT NULL,
   password VARCHAR
 )
 """
@@ -14,22 +19,11 @@ create_label_table = """
 CREATE TABLE IF NOT EXISTS labels (
   userid INTEGER,
   shipment VARCHAR,
-  send_date DATE,
   carrier VARCHAR
 )
 """
 
-create_photo_table = """
-CREATE TABLE IF NOT EXISTS photos (
-  pic BYTEA,
-  userid INTEGER
-  )
-"""
-
 print(inter.execute_query("DROP TABLE users"))
 print(inter.execute_query("DROP TABLE labels"))
-print(inter.execute_query("DROP TABLE photos"))
 print(inter.execute_query(create_users_table))
 print(inter.execute_query(create_label_table))
-print(inter.execute_query(create_photo_table))
-
