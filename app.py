@@ -8,8 +8,6 @@ import shipping as ship
 app = Flask(__name__)
 CORS(app)
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
 
 
 ### TESTS ###
@@ -121,7 +119,7 @@ def validate():
 ### ADDS PACKAGE ###
 # requires full package information to create package object
 # through ezpost
-@app.route('/addpackage/', methods=['POST'])
+@app.route('/addpackage', methods=['POST'])
 def addpackage():
 
     userid = request.form['userid']
@@ -157,6 +155,10 @@ def post_packages(userid):
         return app.response_class(status=404)
     else:
         return app.response_class(status=400)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 # user checked out and paid for package
 # send post request with new shipping label info and username
