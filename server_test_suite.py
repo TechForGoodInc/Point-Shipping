@@ -44,7 +44,7 @@ rate_input = {'origin_country': 'US', 'origin_zip': '98115', 'origin_city':
 
 # test shipping capabilities: true does not return error, false returns error
 # requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input)
-shipping_input_true = {'userid': 1, 'dest_name': 'Mr. Reciever',
+shipping_input_true = {'user_id': 1, 'dest_name': 'Mr. Reciever',
                        'dest_add1': '1115 8th Ave', 'dest_add2': '',
                        'dest_city': 'Grinnell', 'dest_state': 'IA',
                        'dest_zip': '50112', 'dest_country': 'US',
@@ -52,7 +52,8 @@ shipping_input_true = {'userid': 1, 'dest_name': 'Mr. Reciever',
                        'ecl.damoose@gmail.com', 'item_description':
                        'cat rain boots', 'weight': 15, 'height': 12.5,
                        'width': 6.5, 'length': 12, 'category': 'fashion',
-                       'currency': 'USD', 'customs_val': 35}
+                       'currency': 'USD', 'customs_val': 35,
+                       'courier_id': '2bd30fb9-8f41-4fc3-950d-3675494ae318'}
 
 # test password validation
 # requests.post('http://127.0.0.1:5000/validate/', validate_user)
@@ -68,4 +69,6 @@ user_packages_true = {'id': 1}
 user_packages_false = {'id': 2}
 
 # requests.post('http://127.0.0.1:5000/user/', data=input_user)
-resp = requests.post('http://127.0.0.1:5000/getrates/', data=rate_input)
+resp = requests.post('http://127.0.0.1:5000/addpackage/',
+                     data=shipping_input_true)
+print(resp)
