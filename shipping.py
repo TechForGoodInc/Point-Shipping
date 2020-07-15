@@ -1,6 +1,7 @@
 import json
 from urllib.request import Request, urlopen
 import json
+import interface as inter
 
 headers = {
   'Content-Type': 'application/json',
@@ -9,40 +10,86 @@ headers = {
 }
 
 
+def select_rate(origin_country, origin_zip, dest_country, dest_zip,
+                tax_payer, insured, weight, height, width, length, category,
+                currency, customs_val):
+    values = """
+  {{
+    "origin_country_alpha2": "{origin_country}",
+    "origin_postal_code": "{origin_zip}",
+    "destination_country_alpha2": "{dest_country}",
+    "destination_postal_code": "{dest_zip}",
+    "taxes_duties_paid_by": "{tax_payer}",
+    "is_insured": "{insured}",
+    "items": [
+      {{
+        "actual_weight": {weight},
+        "height": {height},
+        "width": {width},
+        "length": {length},
+        "category": "{category}",
+        "declared_currency": "{currency}",
+        "declared_customs_value": {customs_val}
+      }}
+    ]
+  }}
+"""
+    query = values.format(origin_country=origin_country, origin_zip=origin_zip,
+                          dest_country=dest_country, dest_zip=dest_zip,
+                          tax_payer=tax_payer, insured=insured, weight=weight,
+                          height=height, width=width, length=length,
+                          category=category, currency=currency,
+                          customs_val=customs_val)
+    updated_vals = query.encode('ascii')
+    request = Request('https://api.easyship.com/rate/v1/rates',
+                      data=updated_vals, headers=headers)
+    response_body = urlopen(request).read()
+    print(response_body)
+    return "Success"
+
+
 def create_shipment(userid, dest_name, dest_add1, dest_add2, dest_city,
                     dest_state, dest_zip, dest_country, dest_phone,
-                    item_description, weight, height, width, length,
-                    category, currency, customs_val):
-
+                    description, weight, height, width, length,
+                    category, currency, customs_val, dest_email):
+    print(dest_email)
     vals = """
-  {
-    "platform_name": "Amazon",
-    "platform_order_number": "#1234",
-    "destination_country_alpha2": "US",
-    "destination_city": "New York",
-    "destination_postal_code": "10022",
-    "destination_state": "NY",
-    "destination_name": "Aloha Chen",
-    "destination_address_line_1": "300 Park Avenue",
-    "destination_address_line_2": null,
-    "destination_phone_number": "+1 234-567-890",
-    "destination_email_address": "api-support@easyship.com",
+  {{
+    "platform_name": "{platform}",
+    "platform_order_number": "{order_num}",
+    "destination_country_alpha2": "{dest_country}",
+    "destination_city": "{dest_city}",
+    "destination_postal_code": {dest_zip},
+    "destination_state": "{dest_state}",
+    "destination_name": "{dest_name}",
+    "destination_address_line_1": "{dest_add1}",
+    "destination_address_line_2": "{dest_add2}",
+    "destination_phone_number": "{dest_phone}",
+    "destination_email_address": "{dest_email}",
     "items": [
-      {
-        "description": "Silk dress",
+      {{
+        "description": "{description}",
         "sku": "test",
-        "actual_weight": 1.2,
-        "height": 10,
-        "width": 15,
-        "length": 20,
-        "category": "fashion",
-        "declared_currency": "SGD",
-        "declared_customs_value": 100
-      }
+        "actual_weight": {weight},
+        "height": {height},
+        "width": {width},
+        "length": {length},
+        "category": {category},
+        "declared_currency": "{currency}",
+        "declared_customs_value": {customs_val}
+      }}
     ]
-  }
+  }}
     """
-
+    vals = vals.format(platform="Amazon", order_num="#1234",
+                       dest_country=dest_country, dest_city=dest_city,
+                       dest_state=dest_state, dest_name=dest_name,
+                       dest_zip=dest_zip, dest_add1=dest_add1,
+                       dest_add2=dest_add2, dest_phone=dest_phone,
+                       dest_email=dest_email, description=description,
+                       weight=weight, height=height, width=width,
+                       length=length, category=category,
+                       declared_currency=currency, customs_val=customs_val)
     updated_vals = vals.encode('ascii')
     request = Request('https://api.easyship.com/shipment/v1/shipments',
                       data=updated_vals, headers=headers)

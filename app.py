@@ -8,9 +8,9 @@ import shipping as ship
 app = Flask(__name__)
 CORS(app)
 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
 
-
-### TESTS ###
 @app.route('/database/')
 def init():
     rqst = "SELECT * FROM users"
@@ -116,12 +116,29 @@ def validate():
         return app.response_class(status=406)
 
 
+### SELECT RATE FOR PACKAGE ###
+# returns courier id
+@app.route('/getrates/', methods=['POST'])
+def getrate():
+    resp = ship.select_rate(request.form['origin_country'],
+                            request.form['origin_zip'],
+                            request.form['dest_country'],
+                            request.form['dest_zip'],
+                            request.form['tax_payer'],
+                            request.form['insured'],
+                            request.form['weight'], request.form['height'],
+                            request.form['width'], request.form['width'],
+                            request.form['category'],
+                            request.form['currency'],
+                            request.form['customs_val'])
+    return app.response_class(status=200)
+
+
 ### ADDS PACKAGE ###
 # requires full package information to create package object
-# through ezpost
-@app.route('/addpackage', methods=['POST'])
+# through easyship
+@app.route('/addpackage/', methods=['POST'])
 def addpackage():
-
     userid = request.form['userid']
     resp = ship.create_shipment(userid, request.form['dest_name'],
                                 request.form['dest_add1'],
@@ -136,29 +153,11 @@ def addpackage():
                                 request.form['width'], request.form['length'],
                                 request.form['category'],
                                 request.form['currency'],
-                                request.form['customs_val'])
+                                request.form['customs_val'],
+                                request.form['dest_email'])
     print(resp)
     return app.response_class(status=200)
 
-@app.route('/postpackages/<userid>/', methods=['POST'])
-def post_packages(userid):
-    query = f"SELECT * FROM labels WHERE userid = \'{userid}\'"
-    resp = inter.execute_read_query(query)
-    if resp and len(resp) > 0:
-        dict_list = []
-        for val in resp:
-            dict_list.append(json.loads(val[1]))
-        response = app.response_class(response=json.dumps(dict_list),
-                                      status=200, mimetype='application/json')
-        return response
-    elif not resp and len(resp) == 0:
-        return app.response_class(status=404)
-    else:
-        return app.response_class(status=400)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
 # user checked out and paid for package
 # send post request with new shipping label info and username

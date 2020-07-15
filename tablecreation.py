@@ -23,26 +23,7 @@ CREATE TABLE IF NOT EXISTS labels (
 )
 """
 
-print(inter.execute_query("DROP TABLE users"))
-print(inter.execute_query("DROP TABLE labels"))
+#print(inter.execute_query("DROP TABLE users"))
+#print(inter.execute_query("DROP TABLE labels"))
 print(inter.execute_query(create_users_table))
 print(inter.execute_query(create_label_table))
-
-"""
-vals = (
-        {\"dest_name\": \"{dest_name}\", "
-        f"\"destination_address_line_1\": \"{dest_add1}\","
-        f"\"destination_address_line_2\": \"{dest_add2}\", "
-        f"\"destination_city\": \"{dest_city}\", "
-        f"\"destination_state\": \"{dest_state}\", "
-        f"\"destination_postal_code\": {dest_zip}, "
-        f"\"destination_country_alpha2\": \"{dest_country}\", "
-        f"\"destination_phone_number\": \"{dest_phone}\", "
-        f"\"items\": \u007b\"description\": \"{item_description}\", "
-        f"\"sku\": \"test\", \"actual_weight\": {weight}, "
-        f"\"height\": {height}, \"width\": {width}, "
-        f"\"length\": {length}, \"category\": \"{category}\", "
-        f"\"declared_currency\": \"{currency}\", "
-        f"\"declared_customs_value\": {customs_val}\u007d\u007d"
-    )
-"""
