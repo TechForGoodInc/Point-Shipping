@@ -120,8 +120,12 @@ def validate():
 # returns courier id
 @app.route('/getrates/', methods=['POST'])
 def getrate():
-    resp = ship.select_rate(request.form['origin_country'],
+    resp = ship.select_rate(request.form['origin_city'],
+                            request.form['origin_state'],
+                            request.form['origin_country'],
                             request.form['origin_zip'],
+                            request.form['dest_city'],
+                            request.form['dest_state'],
                             request.form['dest_country'],
                             request.form['dest_zip'],
                             request.form['tax_payer'],
@@ -132,6 +136,8 @@ def getrate():
                             request.form['currency'],
                             request.form['customs_val'])
     return app.response_class(status=200)
+
+# origin_city, origin_state, destination_city and destination_state
 
 
 ### ADDS PACKAGE ###

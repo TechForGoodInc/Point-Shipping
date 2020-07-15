@@ -10,13 +10,18 @@ headers = {
 }
 
 
-def select_rate(origin_country, origin_zip, dest_country, dest_zip,
-                tax_payer, insured, weight, height, width, length, category,
-                currency, customs_val):
+def select_rate(origin_city, origin_state, origin_country, origin_zip,
+                dest_city, dest_state, dest_country, dest_zip, tax_payer,
+                insured, weight, height, width, length, category, currency,
+                customs_val):
     values = """
   {{
+    "origin_city": "{origin_city}",
+    "origin_state": "{origin_state}",
     "origin_country_alpha2": "{origin_country}",
     "origin_postal_code": "{origin_zip}",
+    "dest_city": "{dest_city}",
+    "dest_state": "{dest_state}",
     "destination_country_alpha2": "{dest_country}",
     "destination_postal_code": "{dest_zip}",
     "taxes_duties_paid_by": "{tax_payer}",
@@ -34,7 +39,9 @@ def select_rate(origin_country, origin_zip, dest_country, dest_zip,
     ]
   }}
 """
-    query = values.format(origin_country=origin_country, origin_zip=origin_zip,
+    query = values.format(origin_city=origin_city, origin_state=origin_state,
+                          origin_country=origin_country, origin_zip=origin_zip,
+                          dest_city=dest_city, dest_state=dest_state,
                           dest_country=dest_country, dest_zip=dest_zip,
                           tax_payer=tax_payer, insured=insured, weight=weight,
                           height=height, width=width, length=length,
