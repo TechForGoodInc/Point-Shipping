@@ -31,22 +31,31 @@ modify_false = {'id': 50, 'email': 'nobody@gmail.com'}
 # use requests.get('http://127.0.0.1:5000/checkident/', data=input_email)
 input_email = {'email': 'tellabella@aol.com'}
 
+# test out the function of getting rates by sending package details and
+# recieving the shipping rate options (choose rate in separate function)
+# requests.post('http://127.0.0.1:5000/getrates/, data=rate_input)
+rate_input = {'origin_country': 'US', 'origin_zip': '98115', 'dest_country':
+              'US', 'dest_zip': '50112', 'tax_payer': 'Sender', 'insured':
+              'false', 'weight': 15, 'height': 12.5, 'width': 6.5, 'length':
+              12, 'category': 'clothing', 'currency': 'USD', 'customs_val':
+              35}
+
 # test shipping capabilities: true does not return error, false returns error
 # requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input)
 shipping_input_true = {'userid': 1, 'dest_name': 'Mr. Reciever',
                        'dest_add1': '1115 8th Ave', 'dest_add2': '',
-                       'dest_city': 'Grinnell', 'dest_state': 'Iowa',
-                       'dest_zip': '50112', 'dest_country': 'USA',
-                       'dest_phone': '+1 206-867-5309', 'item_description':
+                       'dest_city': 'Grinnell', 'dest_state': 'IA',
+                       'dest_zip': '50112', 'dest_country': 'US',
+                       'dest_phone': '+1 206-867-5309', 'dest_email':
+                       'ecl.damoose@gmail.com', 'item_description':
                        'cat rain boots', 'weight': 15, 'height': 12.5,
-                       'width': 6.5, 'length': 12, 'category': 'clothing',
+                       'width': 6.5, 'length': 12, 'category': 'mobiles',
                        'currency': 'USD', 'customs_val': 35}
 
 # test password validation
 # requests.post('http://127.0.0.1:5000/validate/', validate_user)
 # returns 200 if passwords match, 406 if not
 validate_user = {'username': 'donatellaversace', 'password': 't00nafEEsh!11'}
-
 
 # get each user package in the form of a list of dictionaries
 # when retrieving each package, use response.json()[0] or the
@@ -56,7 +65,5 @@ validate_user = {'username': 'donatellaversace', 'password': 't00nafEEsh!11'}
 user_packages_true = {'id': 1}
 user_packages_false = {'id': 2}
 
-#requests.post('http://127.0.0.1:5000/user/', data=input_user)
-resp = requests.post('http://127.0.0.1:5000/addpackage/',
-                     data=shipping_input_true)
-print(resp.content)
+# requests.post('http://127.0.0.1:5000/user/', data=input_user)
+resp = requests.post('http://127.0.0.1:5000/getrates/', data=rate_input)

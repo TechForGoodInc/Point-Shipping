@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS labels (
 )
 """
 
-print(inter.execute_query("DROP TABLE users"))
-print(inter.execute_query("DROP TABLE labels"))
+#print(inter.execute_query("DROP TABLE users"))
+#print(inter.execute_query("DROP TABLE labels"))
 print(inter.execute_query(create_users_table))
 print(inter.execute_query(create_label_table))

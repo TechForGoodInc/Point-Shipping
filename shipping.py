@@ -1,43 +1,98 @@
-import requests
 import json
 from urllib.request import Request, urlopen
 import json
+import interface as inter
 
 headers = {
   'Content-Type': 'application/json',
-  'Authorization': 'Bearer sand_uQXMIPKfuVmebaIyOFTkEO6ziXpC0W3Gswd/MUkV0Xo='
+  'Authorization': 'Bearer sand_uQXMIPKfuVmebaIyOFTkEO6ziXpC0W3Gswd/MUkV0Xo=',
+  'User-Agent': 'Mozilla/5.0'
 }
+
+
+def select_rate(origin_country, origin_zip, dest_country, dest_zip,
+                tax_payer, insured, weight, height, width, length, category,
+                currency, customs_val):
+    values = """
+  {{
+    "origin_country_alpha2": "{origin_country}",
+    "origin_postal_code": "{origin_zip}",
+    "destination_country_alpha2": "{dest_country}",
+    "destination_postal_code": "{dest_zip}",
+    "taxes_duties_paid_by": "{tax_payer}",
+    "is_insured": "{insured}",
+    "items": [
+      {{
+        "actual_weight": {weight},
+        "height": {height},
+        "width": {width},
+        "length": {length},
+        "category": "{category}",
+        "declared_currency": "{currency}",
+        "declared_customs_value": {customs_val}
+      }}
+    ]
+  }}
+"""
+    query = values.format(origin_country=origin_country, origin_zip=origin_zip,
+                          dest_country=dest_country, dest_zip=dest_zip,
+                          tax_payer=tax_payer, insured=insured, weight=weight,
+                          height=height, width=width, length=length,
+                          category=category, currency=currency,
+                          customs_val=customs_val)
+    updated_vals = query.encode('ascii')
+    request = Request('https://api.easyship.com/rate/v1/rates',
+                      data=updated_vals, headers=headers)
+    response_body = urlopen(request).read()
+    print(response_body)
+    return "Success"
 
 
 def create_shipment(userid, dest_name, dest_add1, dest_add2, dest_city,
                     dest_state, dest_zip, dest_country, dest_phone,
-                    item_description, weight, height, width, length,
-                    category, currency, customs_val):
-    vals = (
-        f"\u007b\"dest_name\": \"{dest_name}\", "
-        f"\"destination_address_line_1\": \"{dest_add1}\","
-        f"\"destination_address_line_2\": \"{dest_add2}\", "
-        f"\"destination_city\": \"{dest_city}\", "
-        f"\"destination_state\": \"{dest_state}\", "
-        f"\"destination_postal_code\": {dest_zip}, "
-        f"\"destination_country_alpha2\": \"{dest_country}\", "
-        f"\"destination_phone_number\": \"{dest_phone}\", "
-        f"\"items\": \u007b\"description\": \"{item_description}\", "
-        f"\"sku\": \"test\", \"actual_weight\": {weight}, "
-        f"\"height\": {height}, \"width\": {width}, "
-        f"\"length\": {length}, \"category\": \"{category}\", "
-        f"\"declared_currency\": \"{currency}\", "
-        f"\"declared_customs_value\": {customs_val}\u007d\u007d"
-    )
-    print(type(vals))
-    print("\n")
-    print(vals)
-    print("\n")
-    package_vals = json.loads(vals)
-    print("here2")
+                    description, weight, height, width, length,
+                    category, currency, customs_val, dest_email):
+    print(dest_email)
+    vals = """
+  {{
+    "platform_name": "{platform}",
+    "platform_order_number": "{order_num}",
+    "destination_country_alpha2": "{dest_country}",
+    "destination_city": "{dest_city}",
+    "destination_postal_code": {dest_zip},
+    "destination_state": "{dest_state}",
+    "destination_name": "{dest_name}",
+    "destination_address_line_1": "{dest_add1}",
+    "destination_address_line_2": "{dest_add2}",
+    "destination_phone_number": "{dest_phone}",
+    "destination_email_address": "{dest_email}",
+    "items": [
+      {{
+        "description": "{description}",
+        "sku": "test",
+        "actual_weight": {weight},
+        "height": {height},
+        "width": {width},
+        "length": {length},
+        "category": {category},
+        "declared_currency": "{currency}",
+        "declared_customs_value": {customs_val}
+      }}
+    ]
+  }}
+    """
+    vals = vals.format(platform="Amazon", order_num="#1234",
+                       dest_country=dest_country, dest_city=dest_city,
+                       dest_state=dest_state, dest_name=dest_name,
+                       dest_zip=dest_zip, dest_add1=dest_add1,
+                       dest_add2=dest_add2, dest_phone=dest_phone,
+                       dest_email=dest_email, description=description,
+                       weight=weight, height=height, width=width,
+                       length=length, category=category,
+                       declared_currency=currency, customs_val=customs_val)
+    updated_vals = vals.encode('ascii')
     request = Request('https://api.easyship.com/shipment/v1/shipments',
-                      data=package_vals, headers=headers)
-
+                      data=updated_vals, headers=headers)
     response_body = urlopen(request).read()
     print(response_body)
     return 0
