@@ -161,7 +161,12 @@ def addpackage():
                                 request.form['currency'],
                                 request.form['customs_val'],
                                 request.form['dest_email'])
-    return app.response_class(status=200, response=resp)
+    decoded = json.loads(resp.decode('utf8'))
+    shipment_dict = decoded['shipment']
+    courier_id = shipment_dict['selected_courier']['id']
+    shipment_id = shipment_dict['easyship_shipment_id']
+    label_resp = ship.buy_labels(courier_id, shipment_id)
+    return app.response_class(status=200, response=label_resp)
 
 
 # user checked out and paid for package

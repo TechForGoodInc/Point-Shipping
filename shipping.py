@@ -102,3 +102,24 @@ def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
                       data=updated_vals, headers=headers)
     response_body = urlopen(request).read()
     return response_body
+
+
+def buy_labels(courier_id, shipment_id):
+    vals = """
+  {{
+    "shipments": [
+      {{
+        "easyship_shipment_id": "{shipment_id}",
+        "courier_id": "{courier_id}"
+      }},
+      {{
+        "easyship_shipment_id": "{shipment_id}"
+      }}
+    ]
+  }}
+"""
+    vals = vals.format(shipment_id=shipment_id, courier_id=courier_id)
+    updated_vals = vals.encode('ascii')
+    request = Request('https://api.easyship.com/label/v1/labels',
+                      data=updated_vals, headers=headers)
+    print(urlopen(request).read())
