@@ -162,8 +162,13 @@ def addpackage():
                                 request.form['customs_val'],
                                 request.form['dest_email'])
     decoded = json.loads(resp.decode('utf8'))
+    if type(decoded) is not dict:
+        return app.response_class(status=500, response=json.dumps(resp))
     shipment_dict = decoded['shipment']
+    print("here5")
     courier_id = shipment_dict['selected_courier']['id']
     shipment_id = shipment_dict['easyship_shipment_id']
     label_resp = ship.buy_labels(courier_id, shipment_id)
+    if type(label_resp) is not list:
+        return app.response_class(status=500, response=json.dumps(label_resp))
     return app.response_class(status=200, response=json.dumps(label_resp))
