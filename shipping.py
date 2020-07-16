@@ -2,6 +2,7 @@ import json
 from urllib.request import Request, urlopen
 import json
 import interface as inter
+import requests
 
 headers = {
   'Content-Type': 'application/json',
@@ -48,10 +49,9 @@ def select_rate(origin_city, origin_state, origin_country, origin_zip,
                           category=category, currency=currency,
                           customs_val=customs_val)
     updated_vals = query.encode('ascii')
-    request = Request('https://api.easyship.com/rate/v1/rates',
-                      data=updated_vals, headers=headers)
-    response_body = urlopen(request).read()
-    return response_body
+    request = requests.post('https://api.easyship.com/rate/v1/rates',
+                            data=updated_vals, headers=headers)
+    return request.content
 
 
 def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
@@ -98,10 +98,20 @@ def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
                        currency=currency, customs_val=customs_val,
                        courierid=courierid)
     updated_vals = vals.encode('ascii')
-    request = Request('https://api.easyship.com/shipment/v1/shipments',
-                      data=updated_vals, headers=headers)
-    response_body = urlopen(request).read()
-    return response_body
+    try:
+        request = requests.post('https://api.easyship.com/shipment/v1/shipments',
+                                data=updated_vals, headers=headers)
+    except requests.exceptions.HTTPError as e:
+        return "Http Error: " + e
+    except requests.exceptions.ConnectionError as f:
+        return "Error Connecting:" + f
+    except requests.exceptions.Timeout as g:
+        return "Timeout Error:" + g
+    except requests.exceptions.RequestException as h:
+        return "Error: " + h
+    except Exception as i:
+        return "Error: " + i
+    return request.content
 
 
 def buy_labels(courier_id, shipment_id):
@@ -111,15 +121,23 @@ def buy_labels(courier_id, shipment_id):
       {{
         "easyship_shipment_id": "{shipment_id}",
         "courier_id": "{courier_id}"
-      }},
-      {{
-        "easyship_shipment_id": "{shipment_id}"
       }}
     ]
   }}
 """
     vals = vals.format(shipment_id=shipment_id, courier_id=courier_id)
     updated_vals = vals.encode('ascii')
-    request = Request('https://api.easyship.com/label/v1/labels',
-                      data=updated_vals, headers=headers)
-    print(urlopen(request).read())
+    try:
+        request = requests.post('https://api.easyship.com/label/v1/labels',
+                                data=updated_vals, headers=headers)
+    except requests.exceptions.HTTPError as e:
+        return "Http Error: " + e
+    except requests.exceptions.ConnectionError as f:
+        return "Error Connecting:" + f
+    except requests.exceptions.Timeout as g:
+        return "Timeout Error:" + g
+    except requests.exceptions.RequestException as h:
+        return "Error: " + h
+    resp = request.content
+    package_vals = json.loads(resp.decode('utf8'))
+    return package_vals['labels']
