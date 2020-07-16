@@ -51,19 +51,18 @@ def select_rate(origin_city, origin_state, origin_country, origin_zip,
     request = Request('https://api.easyship.com/rate/v1/rates',
                       data=updated_vals, headers=headers)
     response_body = urlopen(request).read()
-    print(response_body)
-    return "Success"
+    return response_body
 
 
-def create_shipment(userid, dest_name, dest_add1, dest_add2, dest_city,
-                    dest_state, dest_zip, dest_country, dest_phone,
+def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
+                    dest_city, dest_state, dest_zip, dest_country, dest_phone,
                     description, weight, height, width, length,
                     category, currency, customs_val, dest_email):
-    print(dest_email)
     vals = """
   {{
     "platform_name": "{platform}",
     "platform_order_number": "{order_num}",
+    "selected_courier_id": "{courierid}",
     "destination_country_alpha2": "{dest_country}",
     "destination_city": "{dest_city}",
     "destination_postal_code": {dest_zip},
@@ -81,7 +80,7 @@ def create_shipment(userid, dest_name, dest_add1, dest_add2, dest_city,
         "height": {height},
         "width": {width},
         "length": {length},
-        "category": {category},
+        "category": "{category}",
         "declared_currency": "{currency}",
         "declared_customs_value": {customs_val}
       }}
@@ -96,10 +95,31 @@ def create_shipment(userid, dest_name, dest_add1, dest_add2, dest_city,
                        dest_email=dest_email, description=description,
                        weight=weight, height=height, width=width,
                        length=length, category=category,
-                       declared_currency=currency, customs_val=customs_val)
+                       currency=currency, customs_val=customs_val,
+                       courierid=courierid)
     updated_vals = vals.encode('ascii')
     request = Request('https://api.easyship.com/shipment/v1/shipments',
                       data=updated_vals, headers=headers)
     response_body = urlopen(request).read()
-    print(response_body)
-    return 0
+    return response_body
+
+
+def buy_labels(courier_id, shipment_id):
+    vals = """
+  {{
+    "shipments": [
+      {{
+        "easyship_shipment_id": "{shipment_id}",
+        "courier_id": "{courier_id}"
+      }},
+      {{
+        "easyship_shipment_id": "{shipment_id}"
+      }}
+    ]
+  }}
+"""
+    vals = vals.format(shipment_id=shipment_id, courier_id=courier_id)
+    updated_vals = vals.encode('ascii')
+    request = Request('https://api.easyship.com/label/v1/labels',
+                      data=updated_vals, headers=headers)
+    print(urlopen(request).read())

@@ -135,9 +135,8 @@ def getrate():
                             request.form['category'],
                             request.form['currency'],
                             request.form['customs_val'])
-    return app.response_class(status=200)
-
-# origin_city, origin_state, destination_city and destination_state
+    rate_dict = json.loads(resp.decode('utf8'))
+    return app.response_class(status=200, response=rate_dict)
 
 
 ### ADDS PACKAGE ###
@@ -145,8 +144,9 @@ def getrate():
 # through easyship
 @app.route('/addpackage/', methods=['POST'])
 def addpackage():
-    userid = request.form['userid']
-    resp = ship.create_shipment(userid, request.form['dest_name'],
+    user_id = request.form['user_id']
+    courier_id = request.form['courier_id']
+    resp = ship.create_shipment(user_id, courier_id, request.form['dest_name'],
                                 request.form['dest_add1'],
                                 request.form['dest_add2'],
                                 request.form['dest_city'],
@@ -161,8 +161,12 @@ def addpackage():
                                 request.form['currency'],
                                 request.form['customs_val'],
                                 request.form['dest_email'])
-    print(resp)
-    return app.response_class(status=200)
+    decoded = json.loads(resp.decode('utf8'))
+    shipment_dict = decoded['shipment']
+    courier_id = shipment_dict['selected_courier']['id']
+    shipment_id = shipment_dict['easyship_shipment_id']
+    label_resp = ship.buy_labels(courier_id, shipment_id)
+    return app.response_class(status=200, response=label_resp)
 
 
 # user checked out and paid for package
