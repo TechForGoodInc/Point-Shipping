@@ -136,7 +136,7 @@ def getrate():
                             request.form['currency'],
                             request.form['customs_val'])
     rate_dict = json.loads(resp.decode('utf8'))
-    return app.response_class(status=200, response=rate_dict)
+    return app.response_class(status=200, response=json.dumps(rate_dict))
 
 
 ### ADDS PACKAGE ###
@@ -166,9 +166,4 @@ def addpackage():
     courier_id = shipment_dict['selected_courier']['id']
     shipment_id = shipment_dict['easyship_shipment_id']
     label_resp = ship.buy_labels(courier_id, shipment_id)
-    return app.response_class(status=200, response=label_resp)
-
-
-# user checked out and paid for package
-# send post request with new shipping label info and username
-# return "ok"
+    return app.response_class(status=200, response=json.dumps(label_resp))

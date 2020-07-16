@@ -111,9 +111,6 @@ def buy_labels(courier_id, shipment_id):
       {{
         "easyship_shipment_id": "{shipment_id}",
         "courier_id": "{courier_id}"
-      }},
-      {{
-        "easyship_shipment_id": "{shipment_id}"
       }}
     ]
   }}
@@ -122,4 +119,6 @@ def buy_labels(courier_id, shipment_id):
     updated_vals = vals.encode('ascii')
     request = Request('https://api.easyship.com/label/v1/labels',
                       data=updated_vals, headers=headers)
-    print(urlopen(request).read())
+    resp = urlopen(request).read()
+    package_vals = json.loads(resp.decode('utf8'))
+    return package_vals['labels']
