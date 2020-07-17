@@ -115,6 +115,7 @@ def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
     return [courier_id, shipment_id]
 
 
+# Purchase a label through easypost. Need to finish error handling.
 def buy_labels(id_list):
     vals = """
   {{

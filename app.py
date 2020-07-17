@@ -117,7 +117,8 @@ def validate():
 
 
 ### SELECT RATE FOR PACKAGE ###
-# returns courier id
+# returns list of possible rates given the package/origin/destination
+# aspects
 @app.route('/getrates/', methods=['POST'])
 def getrate():
     resp = ship.select_rate(request.form['origin_city'],

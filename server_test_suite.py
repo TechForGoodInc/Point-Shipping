@@ -34,19 +34,21 @@ input_email = {'email': 'tellabella@aol.com'}
 # test out the function of getting rates by sending package details and
 # recieving the shipping rate options (choose rate in separate function)
 # requests.post('http://127.0.0.1:5000/getrates/, data=rate_input)
-rate_input_true = {'origin_country': 'US', 'origin_zip': '98115', 'origin_city':
-              'Seattle', 'origin_state': 'WA', 'dest_city': 'Grinnell',
-              'dest_state': 'IA', 'dest_country': 'US', 'dest_zip': '50112',
-              'tax_payer': 'Sender', 'insured': 'false', 'weight': 15,
-              'height': 12.5, 'width': 6.5, 'length': 12, 'category':
-              'fashion', 'currency': 'USD', 'customs_val': 35}
+rate_input_true = {'origin_country': 'US', 'origin_zip': '98115',
+                   'origin_city': 'Seattle', 'origin_state': 'WA', 'dest_city':
+                   'Grinnell', 'dest_state': 'IA', 'dest_country': 'US',
+                   'dest_zip': '50112', 'tax_payer': 'Sender', 'insured':
+                   'false', 'weight': 15, 'height': 12.5, 'width': 6.5,
+                   'length': 12, 'category': 'fashion', 'currency': 'USD',
+                   'customs_val': 35}
 
-rate_input_false = {'origin_country': 'US', 'origin_zip': '98115', 'origin_city':
-              'Seattle', 'origin_state': 'WA', 'dest_city': 'Grinnell',
-              'dest_state': 'IA', 'dest_country': 'US', 'dest_zip': '',
-              'tax_payer': 'Sender', 'insured': 'false', 'weight': 15,
-              'height': 12.5, 'width': 6.5, 'length': 12, 'category':
-              'fashion', 'currency': 'USD', 'customs_val': 35}
+rate_input_false = {'origin_country': 'US', 'origin_zip': '98115',
+                    'origin_city': 'Seattle', 'origin_state': 'WA',
+                    'dest_city': 'Grinnell', 'dest_state': 'IA',
+                    'dest_country': 'US', 'dest_zip': '', 'tax_payer':
+                    'Sender', 'insured': 'false', 'weight': 15,
+                    'height': 12.5, 'width': 6.5, 'length': 12, 'category':
+                    'fashion', 'currency': 'USD', 'customs_val': 35}
 
 
 # test shipping capabilities: true does not return error, false returns error
@@ -68,10 +70,21 @@ shipping_input_false = {'user_id': 1, 'dest_name': 'Mr. Reciever',
                         'dest_zip': '50112', 'dest_country': 'US',
                         'dest_phone': '+1 206-867-5309', 'dest_email':
                         'ecl.damoose@gmail.com', 'item_description':
-                        'cat rain boots', 'weight': 15, 'height': -12.5,
+                        'cat rain boots', 'weight': 15, 'height': 12.5,
                         'width': 6.5, 'length': 12, 'category': 'fashion',
                         'currency': 'USD', 'customs_val': 35,
                         'courier_id': '2bd30fb9-8f41-4fc3-950d-3675494ae318'}
+
+shipping_purchase_test = {'user_id': 1, 'dest_name': 'Mr. Reciever',
+                          'dest_add1': '11', 'dest_add2': '',
+                          'dest_city': 'Grinnell', 'dest_state': 'IA',
+                          'dest_zip': '50112', 'dest_country': 'US',
+                          'dest_phone': '+1 206-867-5309', 'dest_email':
+                          'ecl.damoose@gmail.com', 'item_description':
+                          'cat rain boots', 'weight': 15, 'height': 12.5,
+                          'width': 6.5, 'length': 12, 'category': 'fashion',
+                          'currency': 'USD', 'customs_val': 35,
+                          'courier_id': '2bd30fb9-8f41-4fc3-950d-3675494ae318'}
 
 # test password validation
 # requests.post('http://127.0.0.1:5000/validate/', validate_user)
@@ -87,7 +100,7 @@ user_packages_true = {'id': 1}
 user_packages_false = {'id': 2}
 
 # requests.post('http://127.0.0.1:5000/user/', data=input_user)
-resp = requests.post('http://127.0.0.1:5000/getrates/',
-                     data=rate_input_false)
+resp = requests.post('http://127.0.0.1:5000/addpackage/',
+                     data=shipping_purchase_test)
 print(resp)
 print(resp.content)
