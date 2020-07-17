@@ -97,6 +97,4 @@ def encrypt_password(password_input):
 
 # AzureUser@52.188.71.21
 # Pointshipping12
-# sudo ssh -i /Users/emilylouden/Desktop/flask_app/.ssh/id_rsa AzureUser@52.188.71.21
-
-
+# sudo ssh -i /Users/emilylouden/Desktop/key.ppk AzureUser@52.188.13.210

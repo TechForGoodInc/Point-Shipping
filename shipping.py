@@ -11,6 +11,9 @@ headers = {
 }
 
 
+# Takes in aspects of a package and returns rate options
+# in the form of a dictionary containing the carriers and
+# their corresponding prices
 def select_rate(origin_city, origin_state, origin_country, origin_zip,
                 dest_city, dest_state, dest_country, dest_zip, tax_payer,
                 insured, weight, height, width, length, category, currency,
@@ -40,7 +43,8 @@ def select_rate(origin_city, origin_state, origin_country, origin_zip,
     ]
   }}
 """
-    query = values.format(origin_city=origin_city, origin_state=origin_state,
+    query = values.format(origin_city=origin_city,      
+                          origin_state=origin_state,
                           origin_country=origin_country, origin_zip=origin_zip,
                           dest_city=dest_city, dest_state=dest_state,
                           dest_country=dest_country, dest_zip=dest_zip,
@@ -51,7 +55,8 @@ def select_rate(origin_city, origin_state, origin_country, origin_zip,
     updated_vals = query.encode('ascii')
     request = requests.post('https://api.easyship.com/rate/v1/rates',
                             data=updated_vals, headers=headers)
-    return request.content
+    decoded = json.loads(request.content)
+    return decoded
 
 
 def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
@@ -98,23 +103,20 @@ def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
                        currency=currency, customs_val=customs_val,
                        courierid=courierid)
     updated_vals = vals.encode('ascii')
+    request = requests.post('https://api.easyship.com/shipment/v1/shipments',
+                            data=updated_vals, headers=headers)
+    decoded = json.loads(request.content)
     try:
-        request = requests.post('https://api.easyship.com/shipment/v1/shipments',
-                                data=updated_vals, headers=headers)
-    except requests.exceptions.HTTPError as e:
-        return "Http Error: " + e
-    except requests.exceptions.ConnectionError as f:
-        return "Error Connecting:" + f
-    except requests.exceptions.Timeout as g:
-        return "Timeout Error:" + g
-    except requests.exceptions.RequestException as h:
-        return "Error: " + h
-    except Exception as i:
-        return "Error: " + i
-    return request.content
+        shipment_dict = decoded['shipment']
+        courier_id = shipment_dict['selected_courier']['id']
+        shipment_id = shipment_dict['easyship_shipment_id']
+    except KeyError as e:
+        return decoded
+    return [courier_id, shipment_id]
 
 
-def buy_labels(courier_id, shipment_id):
+# Purchase a label through easypost. Need to finish error handling.
+def buy_labels(id_list):
     vals = """
   {{
     "shipments": [
@@ -125,19 +127,9 @@ def buy_labels(courier_id, shipment_id):
     ]
   }}
 """
-    vals = vals.format(shipment_id=shipment_id, courier_id=courier_id)
+    vals = vals.format(shipment_id=id_list[1], courier_id=id_list[0])
     updated_vals = vals.encode('ascii')
-    try:
-        request = requests.post('https://api.easyship.com/label/v1/labels',
-                                data=updated_vals, headers=headers)
-    except requests.exceptions.HTTPError as e:
-        return "Http Error: " + e
-    except requests.exceptions.ConnectionError as f:
-        return "Error Connecting:" + f
-    except requests.exceptions.Timeout as g:
-        return "Timeout Error:" + g
-    except requests.exceptions.RequestException as h:
-        return "Error: " + h
-    resp = request.content
-    package_vals = json.loads(resp.decode('utf8'))
-    return package_vals['labels']
+    request = requests.post('https://api.easyship.com/label/v1/labels',
+                            data=updated_vals, headers=headers)
+    content_dict = json.loads(request.content)
+    return content_dict

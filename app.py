@@ -117,7 +117,8 @@ def validate():
 
 
 ### SELECT RATE FOR PACKAGE ###
-# returns courier id
+# returns list of possible rates given the package/origin/destination
+# aspects
 @app.route('/getrates/', methods=['POST'])
 def getrate():
     resp = ship.select_rate(request.form['origin_city'],
@@ -135,8 +136,9 @@ def getrate():
                             request.form['category'],
                             request.form['currency'],
                             request.form['customs_val'])
-    rate_dict = json.loads(resp.decode('utf8'))
-    return app.response_class(status=200, response=json.dumps(rate_dict))
+    if len(resp['rates']) == 0:
+        return app.response_class(status=500, response=json.dumps(resp))
+    return app.response_class(status=200, response=json.dumps(resp))
 
 
 ### ADDS PACKAGE ###
@@ -161,14 +163,8 @@ def addpackage():
                                 request.form['currency'],
                                 request.form['customs_val'],
                                 request.form['dest_email'])
-    decoded = json.loads(resp.decode('utf8'))
-    if type(decoded) is not dict:
+    if type(resp) is not list:
         return app.response_class(status=500, response=json.dumps(resp))
-    shipment_dict = decoded['shipment']
-    print("here5")
-    courier_id = shipment_dict['selected_courier']['id']
-    shipment_id = shipment_dict['easyship_shipment_id']
-    label_resp = ship.buy_labels(courier_id, shipment_id)
-    if type(label_resp) is not list:
-        return app.response_class(status=500, response=json.dumps(label_resp))
-    return app.response_class(status=200, response=json.dumps(label_resp))
+    else:
+        label_resp = ship.buy_labels(resp)
+        return app.response_class(status=200, response=json.dumps(label_resp))
