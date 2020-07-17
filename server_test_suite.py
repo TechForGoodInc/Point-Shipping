@@ -34,9 +34,16 @@ input_email = {'email': 'tellabella@aol.com'}
 # test out the function of getting rates by sending package details and
 # recieving the shipping rate options (choose rate in separate function)
 # requests.post('http://127.0.0.1:5000/getrates/, data=rate_input)
-rate_input = {'origin_country': 'US', 'origin_zip': '98115', 'origin_city':
+rate_input_true = {'origin_country': 'US', 'origin_zip': '98115', 'origin_city':
               'Seattle', 'origin_state': 'WA', 'dest_city': 'Grinnell',
               'dest_state': 'IA', 'dest_country': 'US', 'dest_zip': '50112',
+              'tax_payer': 'Sender', 'insured': 'false', 'weight': 15,
+              'height': 12.5, 'width': 6.5, 'length': 12, 'category':
+              'fashion', 'currency': 'USD', 'customs_val': 35}
+
+rate_input_false = {'origin_country': 'US', 'origin_zip': '98115', 'origin_city':
+              'Seattle', 'origin_state': 'WA', 'dest_city': 'Grinnell',
+              'dest_state': 'IA', 'dest_country': 'US', 'dest_zip': '',
               'tax_payer': 'Sender', 'insured': 'false', 'weight': 15,
               'height': 12.5, 'width': 6.5, 'length': 12, 'category':
               'fashion', 'currency': 'USD', 'customs_val': 35}
@@ -80,6 +87,7 @@ user_packages_true = {'id': 1}
 user_packages_false = {'id': 2}
 
 # requests.post('http://127.0.0.1:5000/user/', data=input_user)
-resp = requests.post('http://127.0.0.1:5000/addpackage/',
-                     data=shipping_input_false)
+resp = requests.post('http://127.0.0.1:5000/getrates/',
+                     data=rate_input_false)
+print(resp)
 print(resp.content)
