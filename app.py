@@ -3,6 +3,10 @@ from flask_cors import CORS
 import requests
 import interface as inter
 import shipping as ship
+import stripe
+
+stripe.api_key = "sk_test_51H60XYAzJnRyZcvUC1Fanr3dfwLFo6XR1Ne1wq231HFeev2813AaQZXHQQWSrv2NT3jnwUqrqDapYvivHoMr051l00tz2S4nM2"
+
 
 ### BASIC INITIALIATION ###
 app = Flask(__name__)
@@ -168,3 +172,16 @@ def addpackage():
     else:
         label_resp = ship.buy_labels(resp)
         return app.response_class(status=200, response=json.dumps(label_resp))
+
+
+@app.route('/payment/', methods=['POST'])
+def create_payment():
+    try:
+        order_amount = request.form['cost']
+        intent = stripe.PaymentIntent.create(
+            amount=order_amount,
+            currency='usd'
+        )
+        return app.response_class(status=200, response=json.dumps(intent))
+    except Exception as e:
+        return app.response_class(status=403, response=json.dumps(str(e)))

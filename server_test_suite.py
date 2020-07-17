@@ -99,8 +99,9 @@ validate_user = {'username': 'donatellaversace', 'password': 't00nafEEsh!11'}
 user_packages_true = {'id': 1}
 user_packages_false = {'id': 2}
 
-# requests.post('http://127.0.0.1:5000/user/', data=input_user)
-resp = requests.post('http://127.0.0.1:5000/addpackage/',
-                     data=shipping_purchase_test)
-print(resp)
+# test stripe payment capabilities
+stripe_true = {'cost': 123}
+
+# request = requests.post('http://127.0.0.1:5000/user/', data=input_user)
+resp = requests.post('http://127.0.0.1:5000/payment/', data=stripe_true)
 print(resp.content)
