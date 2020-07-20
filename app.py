@@ -16,12 +16,10 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
 
-@app.route('/database/')
-def init():
-    rqst = "SELECT * FROM users"
-    resp = inter.execute_read_query(rqst)
-    label_rqst = "SELECT * FROM labels"
-    resp += inter.execute_read_query(label_rqst)
+@app.route('/packages/<userid>', methods=['POST'])
+def packages(userid):
+    label_rqst = f"SELECT * FROM labels WHERE userid = \'{userid}\'"
+    resp = inter.execute_read_query(label_rqst)
     to_send = app.response_class(response=json.dumps(resp), status=200,
                                  mimetype='application/json')
     return to_send
@@ -177,7 +175,8 @@ def addpackage():
     if type(resp) is not list:
         return app.response_class(status=500, response=json.dumps(resp))
     else:
-        label_resp = ship.buy_labels(resp)
+        success_check = inter.record_package(user_id, resp[0], resp[1])
+        label_resp = ship.buy_labels(resp[1:])
         return app.response_class(status=200, response=json.dumps(label_resp))
 
 
