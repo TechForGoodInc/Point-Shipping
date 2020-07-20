@@ -70,10 +70,10 @@ shipping_input_false = {'user_id': 1, 'dest_name': 'Mr. Reciever',
                         'dest_zip': '50112', 'dest_country': 'US',
                         'dest_phone': '+1 206-867-5309', 'dest_email':
                         'ecl.damoose@gmail.com', 'item_description':
-                        'cat rain boots', 'weight': 15, 'height': 12.5,
+                        'cat rain boots', 'weight': 15, 'height': -12.5,
                         'width': 6.5, 'length': 12, 'category': 'fashion',
                         'currency': 'USD', 'customs_val': 35,
-                        'courier_id': '2bd30fb9-8f41-4fc3-950d-3675494ae318'}
+                        'courier_id': '2b18'}
 
 shipping_purchase_test = {'user_id': 1, 'dest_name': 'Mr. Reciever',
                           'dest_add1': '11', 'dest_add2': '',
@@ -81,7 +81,7 @@ shipping_purchase_test = {'user_id': 1, 'dest_name': 'Mr. Reciever',
                           'dest_zip': '50112', 'dest_country': 'US',
                           'dest_phone': '+1 206-867-5309', 'dest_email':
                           'ecl.damoose@gmail.com', 'item_description':
-                          'cat rain boots', 'weight': 15, 'height': 12.5,
+                          'cat rain boots', 'weight': 15, 'height': -12.5,
                           'width': 6.5, 'length': 12, 'category': 'fashion',
                           'currency': 'USD', 'customs_val': 35,
                           'courier_id': '2bd30fb9-8f41-4fc3-950d-3675494ae318'}
@@ -101,8 +101,6 @@ user_packages_false = {'id': 2}
 
 # test stripe payment capabilities
 stripe_true = {'cost': 123}
+stripe_false = {'cost': -123}
 
 # request = requests.post('http://127.0.0.1:5000/user/', data=input_user)
-resp = requests.post('http://127.0.0.1:5000/identuser/', input_email)
-print(resp.content)
-print(type(resp.content))

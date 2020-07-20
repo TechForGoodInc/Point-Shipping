@@ -189,6 +189,8 @@ def create_payment():
             amount=order_amount,
             currency='usd'
         )
-        return app.response_class(status=200, response=json.dumps(intent))
+        resp = dict(intent)
+        return app.response_class(status=200, response=json.dumps(resp))
     except Exception as e:
-        return app.response_class(status=403, response=json.dumps(str(e)))
+        resp = str(e)
+        return app.response_class(status=403, response=json.dumps(resp))
