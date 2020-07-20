@@ -15,6 +15,7 @@ CORS(app)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
+
 @app.route('/database/')
 def init():
     rqst = "SELECT * FROM users"
@@ -88,12 +89,16 @@ def update_user(col_name):
 ### RECOVER ID ###
 # Uses user email to recover user attributes. This can be used
 # in tandem with the update_user method which takes a user id
-@app.route('/identuser/<email>', methods=['GET'])
-def identify_user(email):
+@app.route('/identuser/', methods=['POST'])
+def identify_user():
+    email = request.form['email']
     if inter.user_exists(email, "email"):
         resp = inter.execute_read_query(
-            f"SELECT id FROM users WHERE email = \'{email}\'")
-        response = app.response_class(response=json.dumps(resp[0][0]),
+            f"SELECT * FROM users WHERE email = \'{email}\'")
+        key_list = ["username", "id", "email", "sender", "street",
+                    "city", "state", "zip", "country", "password"]
+        full_resp = dict(zip(key_list, resp[0]))
+        response = app.response_class(response=json.dumps(full_resp),
                                       status=200,
                                       mimetype='applications/json')
         return response
@@ -108,9 +113,11 @@ def validate():
     if inter.password_match(username, input_pw):
         query = f"SELECT * FROM users WHERE username = \'{username}\'"
         resp = inter.execute_read_query(query)
-        print(resp)
         if resp:
-            response = app.response_class(response=json.dumps(resp),
+            key_list = ["username", "id", "email", "sender", "street",
+                        "city", "state", "zip", "country", "password"]
+            full_resp = dict(zip(key_list, resp[0]))
+            response = app.response_class(response=json.dumps(full_resp),
                                           status=200,
                                           mimetype='application/json')
             return response
@@ -182,6 +189,8 @@ def create_payment():
             amount=order_amount,
             currency='usd'
         )
-        return app.response_class(status=200, response=json.dumps(intent))
+        resp = dict(intent)
+        return app.response_class(status=200, response=json.dumps(resp))
     except Exception as e:
-        return app.response_class(status=403, response=json.dumps(str(e)))
+        resp = str(e)
+        return app.response_class(status=403, response=json.dumps(resp))
