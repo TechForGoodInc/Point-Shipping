@@ -103,5 +103,6 @@ user_packages_false = {'id': 2}
 stripe_true = {'cost': 123}
 
 # request = requests.post('http://127.0.0.1:5000/user/', data=input_user)
-resp = requests.post('http://127.0.0.1:5000/payment/', data=stripe_true)
+resp = requests.post('http://127.0.0.1:5000/validate/', data=validate_user)
 print(resp.content)
+print(type(resp.content))

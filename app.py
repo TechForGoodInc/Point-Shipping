@@ -15,6 +15,7 @@ CORS(app)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
+
 @app.route('/database/')
 def init():
     rqst = "SELECT * FROM users"
@@ -108,9 +109,11 @@ def validate():
     if inter.password_match(username, input_pw):
         query = f"SELECT * FROM users WHERE username = \'{username}\'"
         resp = inter.execute_read_query(query)
-        print(resp)
         if resp:
-            response = app.response_class(response=json.dumps(resp),
+            key_list = ["username", "id", "email", "sender", "street",
+                        "city", "state", "zip", "country", "password"]
+            full_resp = dict(zip(key_list, resp[0]))
+            response = app.response_class(response=json.dumps(full_resp),
                                           status=200,
                                           mimetype='application/json')
             return response
