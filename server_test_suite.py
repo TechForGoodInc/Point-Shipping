@@ -28,7 +28,7 @@ modify_password = {'id': 1, 'password': 'jellybelly99'}
 modify_false = {'id': 50, 'email': 'nobody@gmail.com'}
 
 # get user id, returns '1'
-# use requests.get('http://127.0.0.1:5000/checkident/', data=input_email)
+# use requests.get('http://127.0.0.1:5000/identuser/', data=input_email)
 input_email = {'email': 'tellabella@aol.com'}
 
 # test out the function of getting rates by sending package details and
@@ -103,6 +103,6 @@ user_packages_false = {'id': 2}
 stripe_true = {'cost': 123}
 
 # request = requests.post('http://127.0.0.1:5000/user/', data=input_user)
-resp = requests.post('http://127.0.0.1:5000/validate/', data=validate_user)
+resp = requests.post('http://127.0.0.1:5000/identuser/', input_email)
 print(resp.content)
 print(type(resp.content))

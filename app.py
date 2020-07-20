@@ -89,12 +89,16 @@ def update_user(col_name):
 ### RECOVER ID ###
 # Uses user email to recover user attributes. This can be used
 # in tandem with the update_user method which takes a user id
-@app.route('/identuser/<email>', methods=['GET'])
-def identify_user(email):
+@app.route('/identuser/', methods=['POST'])
+def identify_user():
+    email = request.form['email']
     if inter.user_exists(email, "email"):
         resp = inter.execute_read_query(
-            f"SELECT id FROM users WHERE email = \'{email}\'")
-        response = app.response_class(response=json.dumps(resp[0][0]),
+            f"SELECT * FROM users WHERE email = \'{email}\'")
+        key_list = ["username", "id", "email", "sender", "street",
+                    "city", "state", "zip", "country", "password"]
+        full_resp = dict(zip(key_list, resp[0]))
+        response = app.response_class(response=json.dumps(full_resp),
                                       status=200,
                                       mimetype='applications/json')
         return response
