@@ -112,7 +112,7 @@ def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
         shipment_id = shipment_dict['easyship_shipment_id']
     except KeyError as e:
         return decoded
-    return [courier_id, shipment_id]
+    return [vals, courier_id, shipment_id]
 
 
 # Purchase a label through easypost. Need to finish error handling.

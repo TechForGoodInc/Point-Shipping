@@ -18,8 +18,21 @@ CREATE TABLE IF NOT EXISTS users (
 create_label_table = """
 CREATE TABLE IF NOT EXISTS labels (
   userid INTEGER,
-  shipment VARCHAR,
-  carrier VARCHAR
+  platform TEXT NOT NULL,
+  dest_name VARCHAR,
+  dest_add1 TEXT NOT NULL,
+  dest_add2 TEXT,
+  dest_city TEXT NOT NULL,
+  dest_state TEXT NOT NULL,
+  dest_zip INTEGER,
+  dest_country TEXT NOT NULL,
+  dest_number VARCHAR,
+  dest_email VARCHAR,
+  pkg_length FLOAT,
+  pkg_width FLOAT,
+  pkg_height FLOAT,
+  pkg_weight FLOAT,
+  courierid VARCHAR
 )
 """
 

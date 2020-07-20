@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2 import OperationalError
 import bcrypt
+import json
 
 
 ### CHECK IF USER EXISTS ###
@@ -73,6 +74,39 @@ def encrypt_password(password_input):
     hashed = bcrypt.hashpw(byt_pswd, bcrypt.gensalt())
     hash_test = hashed.decode("utf-8")
     return hashed.decode("utf-8")
+
+
+def record_package(userid, vals, courier):
+    vals = json.loads(vals)
+    platform = vals['platform_name']
+    dest_name = vals['destination_name']
+    dest_add1 = vals['destination_address_line_1']
+    dest_add2 = vals['destination_address_line_2']
+    dest_city = vals['destination_city']
+    dest_state = vals['destination_state']
+    dest_zip = vals['destination_postal_code']
+    dest_country = vals['destination_country_alpha2']
+    dest_number = vals['destination_phone_number']
+    dest_email = vals['destination_email_address']
+    item_list = vals['items']
+    item_dict = item_list[0]
+    pkg_length = item_dict['length']
+    pkg_width = item_dict['width']
+    pkg_height = item_dict['height']
+    pkg_weight = item_dict['actual_weight']
+    courier = vals['selected_courier_id']
+    query = f"""INSERT INTO labels (userid, platform, dest_name, dest_add1,
+                dest_add2, dest_city, dest_state, dest_zip, dest_country,
+                dest_number, dest_email, pkg_length, pkg_width, pkg_height,
+                pkg_weight, courierid)
+                VALUES (\'{userid}\', \'{platform}\', \'{dest_name}\',
+                 \'{dest_add1}\', \'{dest_add2}\', \'{dest_city}\',
+                 \'{dest_state}\', \'{dest_zip}\', \'{dest_country}\',
+                 \'{dest_number}\', \'{dest_email}\', \'{pkg_length}\',
+                 \'{pkg_width}\', \'{pkg_height}\', \'{pkg_weight}\',
+                 \'{courier}\')"""
+    return execute_query(query)
+
 
 # for debugging: export FLASK_ENV=development
 
