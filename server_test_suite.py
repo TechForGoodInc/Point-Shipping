@@ -59,9 +59,9 @@ shipping_input_true = {'user_id': 1, 'dest_name': 'Mr. Reciever',
                        'dest_zip': '50112', 'dest_country': 'US',
                        'dest_phone': '+1 206-867-5309', 'dest_email':
                        'ecl.damoose@gmail.com', 'item_description':
-                       'cat rain boots', 'weight': 15, 'height': 12.5,
+                       'cat rain boots', 'weight': 15.23, 'height': 12.5,
                        'width': 6.5, 'length': 12, 'category': 'fashion',
-                       'currency': 'USD', 'customs_val': 35,
+                       'currency': 'USD', 'customs_val': 35.01,
                        'courier_id': '2bd30fb9-8f41-4fc3-950d-3675494ae318'}
 
 shipping_input_false = {'user_id': 1, 'dest_name': 'Mr. Reciever',
@@ -103,5 +103,5 @@ user_packages_false = {'id': 2}
 stripe_true = {'cost': 123}
 stripe_false = {'cost': -123}
 
-resp = requests.post('http://127.0.0.1:5000/packages/1')
+resp = requests.post('http://127.0.0.1:5000/addpackage/', shipping_input_true)
 print(resp.content)
