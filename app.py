@@ -16,17 +16,19 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
 
-@app.route('/packages/<userid>', methods=['POST'])
+@app.route('/packages/<userid>/', methods=['GET'])
 def packages(userid):
     label_rqst = f"SELECT * FROM labels WHERE userid = \'{userid}\'"
     resp = inter.execute_read_query(label_rqst)
-    labels = """userid, platform, dest_name, dest_add1, dest_add2,
-                dest_city, dest_state, dest_zip, dest_country,
-                dest_number, dest_email, pkg_length, pkg_width,
-                pkg_height, pkg_weight, courierid"""
+    labels = ["userid", "platform", "dest_name", "dest_add1", "dest_add2",
+              "dest_city", "dest_state", "dest_zip", "dest_country",
+              "dest_number", "dest_email", "pkg_length", "pkg_width",
+              "pkg_height", "pkg_weight", "courierid"]
     final_resp = []
     for package in resp:
+        print(resp)
         final_resp.append(dict(zip(labels, package)))
+        print(dict(zip(labels, package)))
     to_send = app.response_class(response=json.dumps(final_resp), status=200,
                                  mimetype='application/json')
     return to_send
