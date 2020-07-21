@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, json
 from flask_cors import CORS
 import requests
-import interface as inter
-import shipping as ship
+from modules import interface as inter
+from modules import shipping as ship
 import stripe
 
 stripe.api_key = "sk_test_51H60XYAzJnRyZcvUC1Fanr3dfwLFo6XR1Ne1wq231HFeev2813AaQZXHQQWSrv2NT3jnwUqrqDapYvivHoMr051l00tz2S4nM2"
@@ -26,9 +26,7 @@ def packages(userid):
               "pkg_height", "pkg_weight", "courierid"]
     final_resp = []
     for package in resp:
-        print(resp)
         final_resp.append(dict(zip(labels, package)))
-        print(dict(zip(labels, package)))
     to_send = app.response_class(response=json.dumps(final_resp), status=200,
                                  mimetype='application/json')
     return to_send
