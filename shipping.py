@@ -1,7 +1,7 @@
 import json
 from urllib.request import Request, urlopen
 import json
-from modules import interface as inter
+import interface as inter
 import requests
 
 headers = {

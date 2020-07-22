@@ -1,12 +1,9 @@
 from flask import Flask, render_template, request, json
 from flask_cors import CORS
 import requests
-from modules import interface as inter
-from modules import shipping as ship
-import stripe
-
-stripe.api_key = "sk_test_51H60XYAzJnRyZcvUC1Fanr3dfwLFo6XR1Ne1wq231HFeev2813AaQZXHQQWSrv2NT3jnwUqrqDapYvivHoMr051l00tz2S4nM2"
-
+import interface as inter
+import shipping as ship
+import payment as pay
 
 ### BASIC INITIALIATION ###
 app = Flask(__name__)
@@ -60,10 +57,8 @@ def user():
         quer3 = f"\'{sender_city}\', \'{sender_state}\', \'{sender_zip}\',"
         quer4 = f"\'{sender_country}\', \'{encrypted}\')"
         query = " ".join([quer1, quer2, quer3, quer4])
-        if inter.execute_query(query):
-            return app.response_class(status=201)
-        else:
-            return app.response_class(status=502)
+        if inter.execute_query(query) and pay.new_user(idval, email):
+            return app.response_class(status=200)
 
     elif request.method == 'DELETE':
         if not inter.user_exists(user_name):
@@ -187,16 +182,12 @@ def addpackage():
         return app.response_class(status=200, response=json.dumps(label_resp))
 
 
-@app.route('/payment/', methods=['POST'])
+@app.route('/payment/', methods=['GET', 'POST'])
 def create_payment():
-    try:
-        order_amount = request.form['cost']
-        intent = stripe.PaymentIntent.create(
-            amount=order_amount,
-            currency='usd'
-        )
-        resp = dict(intent)
-        return app.response_class(status=200, response=json.dumps(resp))
-    except Exception as e:
-        resp = str(e)
-        return app.response_class(status=403, response=json.dumps(resp))
+    if request.method == ['GET']:
+        userid = request.form["userid"]
+        data = ship.get_card_options(userid)
+        return app.response_class(status=200, data=json.dumps(data))
+    paymentid = request.form["token"]
+    pay.charge_card(paymentid)
+    return 1
