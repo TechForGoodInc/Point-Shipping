@@ -182,8 +182,12 @@ def addpackage():
         return app.response_class(status=200, response=json.dumps(label_resp))
 
 
-@app.route('/payment/', methods=['POST'])
+@app.route('/payment/', methods=['GET', 'POST'])
 def create_payment():
+    if request.method == ['GET']:
+        userid = request.form["userid"]
+        data = ship.get_card_options(userid)
+        return app.response_class(status=200, data=json.dumps(data))
     paymentid = request.form["token"]
     pay.charge_card(paymentid)
-    return
+    return 1

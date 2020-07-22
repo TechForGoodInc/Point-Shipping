@@ -14,29 +14,23 @@ def new_user(userid, email):
     return inter.execute_query(query)
 
 
-def charge_card(card_id):
-    resp = stripe.Charge.create(amount=5000, currency="usd", source="tok-visa")
+def charge_card(amount, card_id, userid):
+    try:
+        query = f"SELECT stripe_id FROM stripe WHERE id = \'{userid}\'"
+        data = inter.execute_read_query(query)
+        customer_id = data[0][0]
+        intent = stripe.PaymentIntent.create(amount=amount, currency='usd',
+                                             customer=f"{customer_id}",
+                                             payment_method=f"{card_id}",
+                                             off_session=False,
+                                             confirm=True)
+    except stripe.error.CardError as e:
+        return e.err
+    return intent
 
 
 def get_card_options(userid):
     query = f"SELECT stripe_id FROM stripe WHERE id = \'{userid}\'"
     data = inter.execute_read_query(query)
     customer_id = data[0][0]
-
-new_user(1, "ecl.damoos@gmail.com")
-get_card_options(1)
-
-# need to create payment intent object
-"""
-try:
-  stripe.PaymentIntent.create(
-    amount=1099,
-    currency='usd',
-    customer='{{CUSTOMER_ID}}',
-    payment_method='{{PAYMENT_METHOD_ID}}',
-    off_session=True,
-    confirm=True,
-  )
-except stripe.error.CardError as e:
-  err = e.error
-  """
+    return stripe.PaymentMethod.list(customer=f"{customer_id}", type="card")
