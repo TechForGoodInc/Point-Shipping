@@ -133,3 +133,10 @@ def buy_labels(id_list):
                             data=updated_vals, headers=headers)
     content_dict = json.loads(request.content)
     return content_dict
+
+
+def delete_package(packageid):
+    resp = requests.delete(f"https://api.easyship.com/shipment/v1/shipments/{packageid}",
+                           headers=headers)
+    print(resp.content)
+    return resp

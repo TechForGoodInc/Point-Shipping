@@ -1,4 +1,5 @@
 import requests
+import json
 
 # returns 'user already exists'
 # use requests.post('http://127.0.0.1:5000/user/', data = input_user)
@@ -86,6 +87,12 @@ shipping_purchase_test = {'user_id': 1, 'dest_name': 'Mr. Reciever',
                           'currency': 'USD', 'customs_val': 35,
                           'courier_id': '2bd30fb9-8f41-4fc3-950d-3675494ae318'}
 
+
+# shipment deletion test
+# request.delete(http://127.0.0.1:5000/deletepackage/, data=package_delete_true)
+package_delete_false = {'shipmentid': 'ESUS10035316'}
+
+
 # test password validation
 # requests.post('http://127.0.0.1:5000/validate/', validate_user)
 # returns 200 if passwords match, 406 if not
@@ -103,5 +110,6 @@ user_packages_false = {'id': 2}
 stripe_true = {'cost': 123}
 stripe_false = {'cost': -123}
 
-resp = requests.post('http://127.0.0.1:5000/addpackage/', shipping_input_true)
+
+resp = requests.post('http://127.0.0.1:5000/validate/', validate_user)
 print(resp.content)

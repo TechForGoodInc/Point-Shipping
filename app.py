@@ -106,6 +106,9 @@ def identify_user():
         return app.response_class(status=404)
 
 
+### CONFIRM PASSWORD ###
+# If passwords match, user credentials are returned. Otherwise,
+# an error is returned.
 @app.route('/validate/', methods=['POST'])
 def validate():
     username = request.form['username']
@@ -117,6 +120,8 @@ def validate():
             key_list = ["username", "id", "email", "sender", "street",
                         "city", "state", "zip", "country", "password"]
             full_resp = dict(zip(key_list, resp[0]))
+            stripe_id = pay.get_id(full_resp["id"])
+            full_resp["stripe_id"] = stripe_id
             response = app.response_class(response=json.dumps(full_resp),
                                           status=200,
                                           mimetype='application/json')
@@ -147,10 +152,19 @@ def getrate():
                             request.form['category'],
                             request.form['currency'],
                             request.form['customs_val'])
+    print(resp['rates'])
     if len(resp['rates']) == 0:
         return app.response_class(status=500, response=json.dumps(resp))
-    return app.response_class(status=200, response=json.dumps(resp))
+    return app.response_class(status=200, response=json.dumps(resp['rates']))
 
+
+@app.route('/deletepackage/', methods=['DELETE'])
+def deletepackage():
+    shipid = request.form['shipmentid']
+    check = ship.delete_package(shipid)
+    print(check.status_code)
+    return app.response_class(status=check.status_code,
+                              response=json.dumps(check))
 
 ### ADDS PACKAGE ###
 # requires full package information to create package object
@@ -191,3 +205,7 @@ def create_payment():
     paymentid = request.form["token"]
     pay.charge_card(paymentid)
     return 1
+
+
+# return stripe profile on user login
+# create/charge card
