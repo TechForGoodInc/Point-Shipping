@@ -54,7 +54,9 @@ rate_input_false = {'origin_country': 'US', 'origin_zip': '98115',
 
 # test shipping capabilities: true does not return error, false returns error
 # requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input)
-shipping_input_true = {'user_id': 1, 'dest_name': 'Mr. Reciever',
+shipping_input_true = {'platform_name': 'Amazon',
+                       'platform_order_number': '#1',
+                       'user_id': 1, 'dest_name': 'Mr. Reciever',
                        'dest_add1': '1115 8th Ave', 'dest_add2': '',
                        'dest_city': 'Grinnell', 'dest_state': 'IA',
                        'dest_zip': '50112', 'dest_country': 'US',
@@ -89,7 +91,7 @@ shipping_purchase_test = {'user_id': 1, 'dest_name': 'Mr. Reciever',
 
 
 # shipment deletion test
-# request.delete(http://127.0.0.1:5000/deletepackage/, data=package_delete_true)
+# request.delete(http://127.0.0.1:5000/deletepackage/,data=package_delete_true)
 package_delete_false = {'shipmentid': 'ESUS10035316'}
 
 
@@ -106,10 +108,15 @@ validate_user = {'username': 'donatellaversace', 'password': 't00nafEEsh!11'}
 user_packages_true = {'id': 1}
 user_packages_false = {'id': 2}
 
+
+# retrieve all past packages for a given user
+# requests.get('http://127.0.0.1:5000/getpackages/{userid}/')
+
+
 # test stripe payment capabilities
 stripe_true = {'cost': 123}
 stripe_false = {'cost': -123}
 
 
-resp = requests.post('http://127.0.0.1:5000/validate/', validate_user)
+resp = requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input_true)
 print(resp.content)

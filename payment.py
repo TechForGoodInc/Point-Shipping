@@ -5,23 +5,35 @@ import interface as inter
 stripe.api_key = "sk_test_dapedBnAMB6uk0EtabwAZTn800Dp0xgRzr"
 
 
+# customer's metadata will contain IDs of their charges (added
+# manually by us)
 def new_user(userid, email):
     acct = stripe.Customer.create(email=email)
     acct_id = acct["id"]
-    intent = stripe.SetupIntent.create(customer=acct_id)
-    # stripe.Customer.create_source(acct_id, source={card number})
-    # backend can now create card for defined user
     query = f"INSERT INTO stripe VALUES (\'{userid}\', \'{acct_id}\')"
     return inter.execute_query(query)
 
 
-def get_id(userid):
+def get_customer_id(userid):
     query = f"SELECT stripe_id FROM stripe WHERE id = \'{userid}\'"
     data = inter.execute_read_query(query)
     if data:
         return data[0][0]
     else:
         return False
+
+
+# adds payment method (credit card) with option of making the 
+# payment method the default card
+def add_payment_method(customer_id, source, default=False):
+    if default:
+        customer = stripe.Customer.retrieve(customer_id)
+        old_default = customer["default_source"]
+        resp = stripe.Customer.modify(default_source=source)
+        source = old_default
+        print(resp)
+    resp = stripe.Customer.create_source(customer_id, source)
+    print(resp)
 
 
 def charge_card(amount, card_id, userid):

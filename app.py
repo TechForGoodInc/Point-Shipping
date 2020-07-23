@@ -13,10 +13,10 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
 
-@app.route('/packages/<userid>/', methods=['GET'])
+# userid is the same as the package deliver number
+@app.route('/getpackages/<userid>/', methods=['GET'])
 def packages(userid):
-    label_rqst = f"SELECT * FROM labels WHERE userid = \'{userid}\'"
-    resp = inter.execute_read_query(label_rqst)
+    resp = ship.get_shipments(userid)
     labels = ["userid", "platform", "dest_name", "dest_add1", "dest_add2",
               "dest_city", "dest_state", "dest_zip", "dest_country",
               "dest_number", "dest_email", "pkg_length", "pkg_width",
@@ -29,8 +29,8 @@ def packages(userid):
     return to_send
 
 
-### GET, POST, AND DELETE ###
-# get recieves data, post sends data
+### POST AND DELETE ###
+# post creates a new user, delete deletes a user
 @app.route('/user/', methods=['POST', 'DELETE'])
 def user():
     user_name = request.form['username']
@@ -120,7 +120,7 @@ def validate():
             key_list = ["username", "id", "email", "sender", "street",
                         "city", "state", "zip", "country", "password"]
             full_resp = dict(zip(key_list, resp[0]))
-            stripe_id = pay.get_id(full_resp["id"])
+            stripe_id = pay.get_customer_id(full_resp["id"])
             full_resp["stripe_id"] = stripe_id
             response = app.response_class(response=json.dumps(full_resp),
                                           status=200,
@@ -158,14 +158,6 @@ def getrate():
     return app.response_class(status=200, response=json.dumps(resp['rates']))
 
 
-@app.route('/deletepackage/', methods=['DELETE'])
-def deletepackage():
-    shipid = request.form['shipmentid']
-    check = ship.delete_package(shipid)
-    print(check.status_code)
-    return app.response_class(status=check.status_code,
-                              response=json.dumps(check))
-
 ### ADDS PACKAGE ###
 # requires full package information to create package object
 # through easyship
@@ -173,7 +165,10 @@ def deletepackage():
 def addpackage():
     user_id = request.form['user_id']
     courier_id = request.form['courier_id']
-    resp = ship.create_shipment(user_id, courier_id, request.form['dest_name'],
+    resp = ship.create_shipment(user_id, courier_id,
+                                request.form['platform_name'],
+                                request.form['platform_order_number'],
+                                request.form['dest_name'],
                                 request.form['dest_add1'],
                                 request.form['dest_add2'],
                                 request.form['dest_city'],
@@ -192,8 +187,18 @@ def addpackage():
         return app.response_class(status=500, response=json.dumps(resp))
     else:
         success_check = inter.record_package(user_id, resp[0], resp[1])
-        label_resp = ship.buy_labels(resp[1:])
+        # resp[0] = courierid, resp[1] = shipmentid
+        label_resp = ship.buy_labels(resp)
         return app.response_class(status=200, response=json.dumps(label_resp))
+
+
+@app.route('/deletepackage/', methods=['DELETE'])
+def deletepackage():
+    shipid = request.form['shipmentid']
+    check = ship.delete_package(shipid)
+    print(check.status_code)
+    return app.response_class(status=check.status_code,
+                              response=json.dumps(check))
 
 
 @app.route('/payment/', methods=['GET', 'POST'])
@@ -207,5 +212,4 @@ def create_payment():
     return 1
 
 
-# return stripe profile on user login
 # create/charge card
