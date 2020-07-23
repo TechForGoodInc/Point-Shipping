@@ -59,7 +59,8 @@ def select_rate(origin_city, origin_state, origin_country, origin_zip,
     return decoded
 
 
-def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
+def create_shipment(userid, courierid, platform_name, platform_order_number,
+                    dest_name, dest_add1, dest_add2,
                     dest_city, dest_state, dest_zip, dest_country, dest_phone,
                     description, weight, height, width, length,
                     category, currency, customs_val, dest_email):
@@ -112,7 +113,21 @@ def create_shipment(userid, courierid, dest_name, dest_add1, dest_add2,
         shipment_id = shipment_dict['easyship_shipment_id']
     except KeyError as e:
         return decoded
-    return [vals, courier_id, shipment_id]
+    inter.add_package(userid, dest_name, dest_add1, dest_add2)
+    return [courier_id, shipment_id]
+
+
+# retrieve shipments using the easyship package ids to get the details
+# from easyship
+def get_shipments(userid):
+    query = f"SELECT easyshipid FROM labels WHERE userid = \'{userid}\'"
+    data = inter.execute_read_query(query)
+    if data:
+        print(data)
+        # for shipment in data:
+        # 
+    else:
+        return False
 
 
 # Purchase a label through easypost. Need to finish error handling.
