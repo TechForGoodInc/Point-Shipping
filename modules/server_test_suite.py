@@ -47,7 +47,7 @@ rate_input_false = {'origin_country': 'US', 'origin_zip': '98115',
                     'origin_city': 'Seattle', 'origin_state': 'WA',
                     'dest_city': 'Grinnell', 'dest_state': 'IA',
                     'dest_country': 'US', 'dest_zip': '', 'tax_payer':
-                    'Sender', 'insured': 'false', 'weight': 15,
+                    'Sender', 'insured': 'false', 'weight': -15,
                     'height': 12.5, 'width': 6.5, 'length': 12, 'category':
                     'fashion', 'currency': 'USD', 'customs_val': 35}
 
@@ -118,9 +118,11 @@ stripe_true = {'cost': 123}
 stripe_false = {'cost': -123}
 
 
-# resp = requests.post('http://127.0.0.1:5000/getpackages/addpayment/', data=payment_true)
-payment_true = {'default': 'True', 'customerid': 'cus_HhgZBY5XFfoZwW', 'payment_method': 'pm_1H8GojAzJnRyZcvUeAMXzRZW'}
+# resp = requests.post('http://127.0.0.1:5000/getpackages/addpayment/',
+#                       data=payment_true)
+payment_true = {'default': 'True', 'customerid': 'cus_HhgZBY5XFfoZwW',
+                'payment_method': 'pm_1H8GojAzJnRyZcvUeAMXzRZW'}
 
 
-resp = requests.post('http://127.0.0.1:5000/user/', data=input_user)
+resp = requests.post('http://127.0.0.1:5000/getrates/', data=rate_input_false)
 print(resp.content)

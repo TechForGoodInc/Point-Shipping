@@ -1,6 +1,6 @@
 import stripe
 import json
-from modules import interface as inter
+import interface as inter
 
 stripe.api_key = "sk_test_dapedBnAMB6uk0EtabwAZTn800Dp0xgRzr"
 

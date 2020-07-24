@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, json
 from flask_cors import CORS
 import requests
-from modules import interface as inter
-from modules import shipping as ship
-from modules import payment as pay
+import interface as inter
+import shipping as ship
+import payment as pay
 
 ### BASIC INITIALIATION ###
 app = Flask(__name__)
@@ -150,10 +150,13 @@ def getrates():
                                 request.form['category'],
                                 request.form['currency'],
                                 request.form['customs_val'])
-        print(resp['rates'])
-        if len(resp['rates']) == 0:
-            return app.response_class(status=201, response=json.dumps(resp), mimetype='application/json')
-        return app.response_class(status=200, response=json.dumps(resp), mimetype='application/json')
+        try:
+            rates = resp['rates']
+            return app.response_class(status=201, response=json.dumps(resp),
+                                      mimetype='application/json')
+        except KeyError:
+            return app.response_class(status=500, response=json.dumps(resp),
+                                      mimetype='application/json')
 
 
 ### ADDS PACKAGE ###
