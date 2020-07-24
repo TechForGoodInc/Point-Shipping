@@ -122,5 +122,5 @@ stripe_false = {'cost': -123}
 payment_true = {'default': 'True', 'customerid': 'cus_HhgZBY5XFfoZwW', 'payment_method': 'pm_1H8GojAzJnRyZcvUeAMXzRZW'}
 
 
-resp = requests.post('http://127.0.0.1:5000/addpayment/', data=payment_true)
+resp = requests.post('http://127.0.0.1:5000/validate/', data=validate_user)
 print(resp.content)
