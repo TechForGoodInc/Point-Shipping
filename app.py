@@ -200,16 +200,17 @@ def deletepackage():
                               response=json.dumps(check))
 
 
-@app.route('/payment/', methods=['GET', 'POST'])
+@app.route('/addpayment/', methods=['POST'])
 def create_payment():
-    if request.method == ['GET']:
-        userid = request.form["userid"]
-        data = ship.get_card_options(userid)
-        return app.response_class(status=200, data=json.dumps(data))
-    paymentid = request.form["token"]
-    pay.charge_card(paymentid)
-    return 1
-
+    customerid = request.form["customerid"]
+    pm_id = request.form["payment_method"]
+    default_check = request.form["default"]
+    if default_check:
+        resp = pay.add_payment_method(customerid, pm_id, True)
+        return app.response_class(status=200)
+    else:
+        resp = pay.add_payment_method(customerid, pm_id)
+        return app.response_class(status=200)
 
 # return payment method
 # create/charge card

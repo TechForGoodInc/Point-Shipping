@@ -118,10 +118,9 @@ stripe_true = {'cost': 123}
 stripe_false = {'cost': -123}
 
 
-# resp = requests.get('http://127.0.0.1:5000/getpackages/1/')
-#resp = requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input_true)
-# resp = requests.post('http://127.0.0.1:5000//', data=validate_user)
-resp = requests.post('http://127.0.0.1:5000/user/', data=input_user)
-print(resp.content)
-resp = requests.post('http://127.0.0.1:5000/validate/', data=validate_user)
+# resp = requests.post('http://127.0.0.1:5000/getpackages/addpayment/', data=payment_true)
+payment_true = {'default': 'True', 'customerid': 'cus_HhgZBY5XFfoZwW', 'payment_method': 'pm_1H8GojAzJnRyZcvUeAMXzRZW'}
+
+
+resp = requests.post('http://127.0.0.1:5000/addpayment/', data=payment_true)
 print(resp.content)
