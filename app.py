@@ -117,6 +117,8 @@ def validate():
             full_resp = dict(zip(key_list, resp[0]))
             stripe_id = pay.get_customer_id(full_resp["id"])
             full_resp["stripe_id"] = stripe_id
+            payment_options = pay.get_payment_options(full_resp["stripe_id"])
+            full_resp["payment_options"] = payment_options
             response = app.response_class(response=json.dumps(full_resp),
                                           status=200,
                                           mimetype='application/json')
@@ -209,5 +211,5 @@ def create_payment():
     return 1
 
 
-# return payment method options
+# return payment method
 # create/charge card
