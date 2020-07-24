@@ -17,16 +17,11 @@ if __name__ == '__main__':
 @app.route('/getpackages/<userid>/', methods=['GET'])
 def packages(userid):
     resp = ship.get_shipments(userid)
-    labels = ["userid", "platform", "dest_name", "dest_add1", "dest_add2",
-              "dest_city", "dest_state", "dest_zip", "dest_country",
-              "dest_number", "dest_email", "pkg_length", "pkg_width",
-              "pkg_height", "pkg_weight", "courierid"]
-    final_resp = []
-    for package in resp:
-        final_resp.append(dict(zip(labels, package)))
-    to_send = app.response_class(response=json.dumps(final_resp), status=200,
-                                 mimetype='application/json')
-    return to_send
+    print(resp)
+    if resp:
+        return app.response_class(status=200)
+    else:
+        return app.response_class(status=400)
 
 
 ### POST AND DELETE ###
@@ -186,7 +181,9 @@ def addpackage():
     if type(resp) is not list:
         return app.response_class(status=500, response=json.dumps(resp))
     else:
+        print(resp)
         success_check = inter.record_package(user_id, resp[0], resp[1])
+        print(success_check)
         # resp[0] = courierid, resp[1] = shipmentid
         label_resp = ship.buy_labels(resp)
         return app.response_class(status=200, response=json.dumps(label_resp))
@@ -212,4 +209,5 @@ def create_payment():
     return 1
 
 
+# return payment method options
 # create/charge card

@@ -118,5 +118,6 @@ stripe_true = {'cost': 123}
 stripe_false = {'cost': -123}
 
 
-resp = requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input_true)
+resp = requests.get('http://127.0.0.1:5000/getpackages/1/')
+#resp = requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input_true)
 print(resp.content)

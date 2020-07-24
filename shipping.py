@@ -93,7 +93,7 @@ def create_shipment(userid, courierid, platform_name, platform_order_number,
     ]
   }}
     """
-    vals = vals.format(platform="Amazon", order_num="#1234",
+    vals = vals.format(platform=platform_name, order_num=platform_order_number,
                        dest_country=dest_country, dest_city=dest_city,
                        dest_state=dest_state, dest_name=dest_name,
                        dest_zip=dest_zip, dest_add1=dest_add1,
@@ -113,7 +113,6 @@ def create_shipment(userid, courierid, platform_name, platform_order_number,
         shipment_id = shipment_dict['easyship_shipment_id']
     except KeyError as e:
         return decoded
-    inter.add_package(userid, dest_name, dest_add1, dest_add2)
     return [courier_id, shipment_id]
 
 
@@ -122,12 +121,13 @@ def create_shipment(userid, courierid, platform_name, platform_order_number,
 def get_shipments(userid):
     query = f"SELECT easyshipid FROM labels WHERE userid = \'{userid}\'"
     data = inter.execute_read_query(query)
-    if data:
-        print(data)
-        # for shipment in data:
-        # 
-    else:
-        return False
+    shipment_list = []
+    for shipment in data[0]:
+        shipment_list.append(shipment)
+    resp = requests.post('https://api.easyship.com/shipment/v1/shipments/ESUS10035438',
+                         headers=headers)
+    print(resp)
+    return resp
 
 
 # Purchase a label through easypost. Need to finish error handling.
