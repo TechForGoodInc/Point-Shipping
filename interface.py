@@ -85,24 +85,9 @@ def record_package(userid, courierid, shipmentid):
 
 # for debugging: export FLASK_ENV=development
 
-
-# hash input password
-# get input, non-hashed pw and compare hash and regular password
-
-# in flask_app directory:
-# python3 -m venv venv
-# source venv/bin/activate
-
-# pip3 install flask
-# pip3 install requests
-# pip3 install psycopg2-binary
-# pip3 install bcrypt
-
 # to run:
 # export FLASK_APP=server.py
 # flask run
-
-# sudo -i brings you to root directory
 
 # AzureUser@52.188.71.21
 # Pointshipping12

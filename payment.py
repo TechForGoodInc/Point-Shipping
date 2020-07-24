@@ -23,16 +23,23 @@ def get_customer_id(userid):
         return False
 
 
+def get_payment_options(userid):
+    customer = stripe.Customer.retrieve(userid)
+    payment_options = customer["sources"]
+    return payment_options["data"]
+
+
+
 # adds payment method (credit card) with option of making the 
 # payment method the default card
-def add_payment_method(customer_id, source, default=False):
+def add_payment_method(customer_id, pm_source, default=False):
     if default:
         customer = stripe.Customer.retrieve(customer_id)
         old_default = customer["default_source"]
-        resp = stripe.Customer.modify(default_source=source)
-        source = old_default
+        resp = stripe.Customer.modify(customer_id, default_source=pm_source)
+        pm_source = old_default
         print(resp)
-    resp = stripe.Customer.create_source(customer_id, source)
+    resp = stripe.Customer.create_source(customer_id, source=pm_source)
     print(resp)
 
 
