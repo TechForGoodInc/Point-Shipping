@@ -11,6 +11,7 @@ def new_user(userid, email):
     acct = stripe.Customer.create(email=email)
     acct_id = acct["id"]
     query = f"INSERT INTO stripe VALUES (\'{userid}\', \'{acct_id}\')"
+    print("here")
     return inter.execute_query(query)
 
 

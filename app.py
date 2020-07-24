@@ -28,9 +28,8 @@ def packages(userid):
 # post creates a new user, delete deletes a user
 @app.route('/user/', methods=['POST', 'DELETE'])
 def user():
-    user_name = request.form['username']
-
     if request.method == 'POST':
+        user_name = request.form['username']
         if inter.user_exists(user_name):
             return app.response_class(status=409)
         # used to generate the user id (requires at least user
@@ -76,7 +75,20 @@ def update_user(col_name):
         replace = request.form[f"{col_name}"]
         query = f"UPDATE users SET {col_name} = \'{replace}\' WHERE id = \'{idval}\'"
         if inter.execute_query(query):
-            return app.response_class(status=200)
+            query = f"SELECT * FROM users WHERE id = \'{idval}\'"
+            resp = inter.execute_read_query(query)
+            if resp:
+                key_list = ["username", "id", "email", "sender", "street",
+                            "city", "state", "zip", "country", "password"]
+                full_resp = dict(zip(key_list, resp[0]))
+                stripe_id = pay.get_customer_id(full_resp["id"])
+                full_resp["stripe_id"] = stripe_id
+                payment_options = pay.get_payment_options(full_resp["stripe_id"])
+                full_resp["payment_options"] = payment_options
+                response = app.response_class(response=json.dumps(full_resp),
+                                              status=200,
+                                              mimetype='application/json')
+                return app.response_class(status=200)
 
     return app.response_class(status=404)
 
@@ -214,3 +226,5 @@ def create_payment():
 
 # return payment method
 # create/charge card
+
+# sudo service apache2 restart
