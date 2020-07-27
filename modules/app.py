@@ -75,9 +75,23 @@ def update_user(col_name):
     if inter.user_exists(idval, 'id'):
         replace = request.form[f"{col_name}"]
         query = f"UPDATE users SET {col_name} = \'{replace}\' WHERE id = \'{idval}\'"
+        print(query)
         if inter.execute_query(query):
-            return app.response_class(status=200)
-
+            query = f"SELECT * FROM users WHERE id = \'{idval}\'"
+            resp = inter.execute_read_query(query)
+            if resp:
+                key_list = ["username", "id", "email", "sender", "street",
+                            "city", "state", "zip", "country", "password"]
+                full_resp = dict(zip(key_list, resp[0]))
+                stripe_id = pay.get_customer_id(full_resp["id"])
+                full_resp["stripe_id"] = stripe_id
+                payment_options = pay.get_payment_options(full_resp["stripe_id"])
+                full_resp["payment_options"] = payment_options
+                print(full_resp)
+                response = app.response_class(response=json.dumps(full_resp),
+                                              status=200,
+                                              mimetype='application/json')
+                return response
     return app.response_class(status=404)
 
 
@@ -95,10 +109,11 @@ def identify_user():
         full_resp = dict(zip(key_list, resp[0]))
         response = app.response_class(response=json.dumps(full_resp),
                                       status=200,
-                                      mimetype='applications/json')
+                                      mimetype='application/json')
         return response
     else:
         return app.response_class(status=404)
+
 
 
 ### CONFIRM PASSWORD ###
@@ -155,7 +170,7 @@ def getrates():
             return app.response_class(status=201, response=json.dumps(resp),
                                       mimetype='application/json')
         except KeyError:
-            return app.response_class(status=500, response=json.dumps(resp),
+            return app.response_class(status=200, response=json.dumps(resp),
                                       mimetype='application/json')
 
 
@@ -207,13 +222,13 @@ def deletepackage():
 @app.route('/addpayment/', methods=['POST'])
 def create_payment():
     customerid = request.form["customerid"]
-    pm_id = request.form["payment_method"]
+    card_num = request.form["source"]
     default_check = request.form["default"]
     if default_check:
-        resp = pay.add_payment_method(customerid, pm_id, True)
+        resp = pay.add_payment_method(customerid, card_num, exp, cv, True)
         return app.response_class(status=200)
     else:
-        resp = pay.add_payment_method(customerid, pm_id)
+        resp = pay.add_payment_method(customerid, card_num, exp, cv)
         return app.response_class(status=200)
 
 # return payment method
