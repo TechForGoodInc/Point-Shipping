@@ -2,8 +2,7 @@ import stripe
 import json
 import interface as inter
 
-stripe.api_key = "sk_test_dapedBnAMB6uk0EtabwAZTn800Dp0xgRzr"
-
+stripe.api_key = "sk_test_51H60XYAzJnRyZcvUC1Fanr3dfwLFo6XR1Ne1wq231HFeev2813AaQZXHQQWSrv2NT3jnwUqrqDapYvivHoMr051l00tz2S4nM2"
 
 # customer's metadata will contain IDs of their charges (added
 # manually by us)
@@ -31,14 +30,13 @@ def get_payment_options(userid):
 
 # adds payment method (credit card) with option of making the 
 # payment method the default card
-def add_payment_method(customer_id, card_num, exp, cv, default=False):
-    if default:
-        customer = stripe.Customer.retrieve(customer_id)
-        old_default = customer["default_source"]
-        resp = stripe.Customer.modify(customer_id, default_source=pm_source)
-        pm_source = old_default
-        print(resp)
-    resp = stripe.Customer.create_source(customer_id, source=pm_source)
+def add_payment_method(customer_id, card_num, exp_month, exp_year, cvc):
+    resp = stripe.PaymentMethod.create(
+        type="card",
+        card={"number": f"{card_num}", "exp_month": f"{exp_month}",
+              "exp_year": f"{exp_year}", "cvc": f"{cvc}"})
+    pm_id = resp["id"]
+    resp = stripe.PaymentMethod.attach(pm_id, customer=customer_id)
     print(resp)
 
 

@@ -124,5 +124,11 @@ payment_true = {'default': 'True', 'customerid': 'cus_HhgZBY5XFfoZwW',
                 'payment_method': 'pm_1H8GojAzJnRyZcvUeAMXzRZW'}
 
 
-resp = requests.post('http://127.0.0.1:5000/getrates/', data=rate_input_false)
+create_payment_method = {'default': 'False', 'card_num': '4242424242424242',
+                         'cvc': '314', 'exp_month': 7, 'exp_year': 2021,
+                         'stripeid': 'cus_Hj7qZ7KnMgUquT'}
+
+#resp = requests.post('http://127.0.0.1:5000/user/', data=input_user)
+resp = requests.post('http://127.0.0.1:5000/addpayment/',
+                     data=create_payment_method)
 print(resp.content)
