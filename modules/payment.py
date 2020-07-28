@@ -57,5 +57,5 @@ def get_card_options(userid):
     data = inter.execute_read_query(query)
     if data:
         customer_id = data[0][0]
-        return stripe.PaymentMethod.list(customer=f"{customer_id}",
-                                         type="card")
+        customer = stripe.Customer.retrieve(f"{customer_id}")
+        return customer["sources"]

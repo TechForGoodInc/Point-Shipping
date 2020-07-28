@@ -219,6 +219,14 @@ def deletepackage():
                               response=json.dumps(check))
 
 
+@app.route('/cardoptions/', methods=['POST'])
+def card_options():
+    userid = request.form["userid"]
+    sources = pay.get_card_options(userid)
+    return app.response_class(status=200, response=json.dumps(sources),
+                              mimetype='application/json')
+
+
 @app.route('/addpayment/', methods=['POST'])
 def create_payment():
     stripeid = request.form["stripeid"]
