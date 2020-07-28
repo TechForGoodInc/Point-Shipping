@@ -227,7 +227,17 @@ def create_payment():
     exp_year = request.form["exp_year"]
     cvc = request.form["cvc"]
     resp = pay.add_payment_method(stripeid, card_num, exp_month, exp_year, cvc)
-    return app.response_class(status=200)
+    return app.response_class(status=200, response=json.dumps(resp),
+                              mimetype='application/json')
+
+
+@app.route('/chargecard/', methods=['POST'])
+def charge_card():
+    source = request.form["payment_token"]
+    amount = request.form["amount"]
+    currency = 'usd'
+    pay.charge_card(source)
 
 # return payment method
 # create/charge card
+# sudo service apache2 restart

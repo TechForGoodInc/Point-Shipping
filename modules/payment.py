@@ -37,25 +37,18 @@ def add_payment_method(customer_id, card_num, exp_month, exp_year, cvc):
               "exp_year": f"{exp_year}", "cvc": f"{cvc}"})
     pm_id = resp["id"]
     resp = stripe.PaymentMethod.attach(pm_id, customer=customer_id)
-    print(resp)
+    return resp
 
 
 def charge_card(amount, card_id, userid):
+    # user id is the string provided by stripe to identify users
     try:
-        query = f"SELECT stripe_id FROM stripe WHERE id = \'{userid}\'"
-        data = inter.execute_read_query(query)
-        if data:
-            customer_id = data[0][0]
-            intent = stripe.PaymentIntent.create(amount=amount, currency='usd',
-                                                 customer=f"{customer_id}",
-                                                 payment_method=f"{card_id}",
-                                                 off_session=False,
-                                                 confirm=True)
-        else:
-            return "False"
+        intent = stripe.Charge.create(amount=amount, currency="usd",
+                                      source="card_id", customer=userid)
     except stripe.error.CardError as e:
         return e.err
     # now backend can charge the card
+    print(intent)
     return intent
 
 
