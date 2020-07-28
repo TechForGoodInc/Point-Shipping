@@ -134,6 +134,5 @@ create_payment_method = {'default': 'False', 'card_num': '4242424242424242',
 charge_card = {'payment_token': 'pm_1H9yYXAzJnRyZcvUNdL1Sa6H', 'amount': 123.4}
 
 
-userid = {'userid': 1}
-resp = requests.post('http://127.0.0.1:5000/cardoptions/', data=userid)
+
 print(resp.content)

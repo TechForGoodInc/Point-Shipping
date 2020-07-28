@@ -244,7 +244,9 @@ def charge_card():
     source = request.form["payment_token"]
     amount = request.form["amount"]
     currency = 'usd'
-    pay.charge_card(source)
+    resp = pay.charge_card(source)
+    return app.response_class(status=200, response=json.dumps(resp),
+                              mimetype='application/json')
 
 # return payment method
 # create/charge card
