@@ -221,15 +221,13 @@ def deletepackage():
 
 @app.route('/addpayment/', methods=['POST'])
 def create_payment():
-    customerid = request.form["customerid"]
-    card_num = request.form["source"]
-    default_check = request.form["default"]
-    if default_check:
-        resp = pay.add_payment_method(customerid, card_num, exp, cv, True)
-        return app.response_class(status=200)
-    else:
-        resp = pay.add_payment_method(customerid, card_num, exp, cv)
-        return app.response_class(status=200)
+    stripeid = request.form["stripeid"]
+    card_num = request.form["card_num"]
+    exp_month = request.form["exp_month"]
+    exp_year = request.form["exp_year"]
+    cvc = request.form["cvc"]
+    resp = pay.add_payment_method(stripeid, card_num, exp_month, exp_year, cvc)
+    return app.response_class(status=200)
 
 # return payment method
 # create/charge card
