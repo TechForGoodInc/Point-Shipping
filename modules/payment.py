@@ -44,7 +44,7 @@ def charge_card(amount, card_id, userid):
     # user id is the string provided by stripe to identify users
     try:
         intent = stripe.Charge.create(amount=amount, currency="usd",
-                                      source="card_id", customer=userid)
+                                      source=card_id, customer=userid)
     except stripe.error.CardError as e:
         return e.err
     # now backend can charge the card
