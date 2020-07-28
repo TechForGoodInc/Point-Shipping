@@ -219,6 +219,14 @@ def deletepackage():
                               response=json.dumps(check))
 
 
+@app.route('/cardoptions/', methods=['POST'])
+def card_options():
+    userid = request.form["userid"]
+    sources = pay.get_card_options(userid)
+    return app.response_class(status=200, response=json.dumps(sources),
+                              mimetype='application/json')
+
+
 @app.route('/addpayment/', methods=['POST'])
 def create_payment():
     stripeid = request.form["stripeid"]
@@ -227,7 +235,19 @@ def create_payment():
     exp_year = request.form["exp_year"]
     cvc = request.form["cvc"]
     resp = pay.add_payment_method(stripeid, card_num, exp_month, exp_year, cvc)
-    return app.response_class(status=200)
+    return app.response_class(status=200, response=json.dumps(resp),
+                              mimetype='application/json')
+
+
+@app.route('/chargecard/', methods=['POST'])
+def charge_card():
+    source = request.form["payment_token"]
+    amount = request.form["amount"]
+    currency = 'usd'
+    resp = pay.charge_card(source)
+    return app.response_class(status=200, response=json.dumps(resp),
+                              mimetype='application/json')
 
 # return payment method
 # create/charge card
+# sudo service apache2 restart
