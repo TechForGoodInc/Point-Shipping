@@ -4,14 +4,6 @@ import bcrypt
 import json
 
 
-### CHECK IF USER EXISTS ###
-def user_exists(userid, column_name="username"):
-    user_exist = execute_read_query(
-        f"SELECT COUNT(*) FROM users WHERE {column_name} = \'{userid}\'")
-    exist_check = user_exist[0][0]
-    return exist_check > 0
-
-
 ### SQL INIT ###
 def create_connection():
     connection = None
@@ -56,6 +48,28 @@ def execute_read_query(query, arguments=None):
         except OperationalError as e:
             print(f"The error '{e}' occurred")
             return False
+
+
+### CHECK IF USER EXISTS ###
+def user_exists(userid, column_name="username"):
+    user_exist = execute_read_query(
+        f"SELECT COUNT(*) FROM users WHERE {column_name} = \'{userid}\'")
+    exist_check = user_exist[0][0]
+    return exist_check > 0
+
+
+### CHECK IF USERNAME IS TAKEN ###
+def username_exists(username):
+    check = execute_read_query(
+        f"SELECT COUNT(*) FROM users WHERE \"username\" = \'{username}\'")
+    exist_check = check[0][0]
+    if exist_check > 0:
+        return "True"
+    else:
+        return "False"
+
+
+username_exists('donatellaversace')
 
 
 ### CHECK IF PASSWORDS MATCH ###

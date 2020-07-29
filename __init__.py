@@ -66,6 +66,18 @@ def user():
         return app.response_class(status=400)
 
 
+
+@app.route('/userexists/', methods=['GET'])
+def user_exists():
+    if request.method == 'GET':
+        username = request.form["username"]
+        check = inter.username_exists(username)
+    return app.response_class(status=200, response=json.dumps(check),
+                              mimetime='application/json')
+
+
+
+
 ### MODIFY USER ###
 # The column name represents what user attribute to update
 # ID val is accessible through user identifier method
