@@ -256,3 +256,4 @@ def charge_card():
 # return payment method
 # create/charge card
 # sudo service apache2 restart
+# cat /var/log/apache2/error.log

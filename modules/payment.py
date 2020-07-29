@@ -43,13 +43,17 @@ def add_payment_method(customer_id, card_num, exp_month, exp_year, cvc):
 def charge_card(amount, card_id, userid):
     # user id is the string provided by stripe to identify users
     try:
+<<<<<<< HEAD
+        amount = float(amount)
+        intent = stripe.PaymentIntent.create(amount=amount, currency="usd",
+                                             payment_method_types=['card'])
+=======
         intent = stripe.Charge.create(amount=amount, currency="usd",
                                       source=card_id, customer=userid)
+>>>>>>> abda0b876df75cccdd90357acb472af631c0ad28
     except stripe.error.CardError as e:
         return e.err
-    # now backend can charge the card
-    print(intent)
-    return intent
+    return intent.client_secret
 
 
 def get_card_options(userid):
