@@ -245,11 +245,8 @@ def create_payment():
 @app.route('/chargecard/', methods=['POST'])
 def charge_card():
     if request.method == 'POST':
-        print("boop*beep")
-        source = request.form["payment_token"]
         amount = request.form["amount"]
-        userid = request.form["stripeuser"]
-        resp = pay.charge_card(amount, source, userid)
+        resp = pay.charge_card(amount)
         return app.response_class(status=200, response=json.dumps(resp),
                                   mimetype='application/json')
 
