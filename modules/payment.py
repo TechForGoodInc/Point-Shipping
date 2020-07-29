@@ -43,7 +43,7 @@ def add_payment_method(customer_id, card_num, exp_month, exp_year, cvc):
 def charge_card(amount):
     # user id is the string provided by stripe to identify users
     try:
-        amount = float(amount)
+        amount = int(100 * float(amount))
         intent = stripe.PaymentIntent.create(amount=amount, currency="usd",
                                              payment_method_types=['card'])
     except stripe.error.CardError as e:
