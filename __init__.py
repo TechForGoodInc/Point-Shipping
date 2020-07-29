@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, json
 from flask_cors import CORS
 import requests
-import interface as inter
-import shipping as ship
-import payment as pay
+from modules import interface as inter
+from modules import shipping as ship
+from modules import payment as pay
 
 ### BASIC INITIALIATION ###
 app = Flask(__name__)
@@ -85,7 +85,8 @@ def update_user(col_name):
                 full_resp = dict(zip(key_list, resp[0]))
                 stripe_id = pay.get_customer_id(full_resp["id"])
                 full_resp["stripe_id"] = stripe_id
-                payment_options = pay.get_payment_options(full_resp["stripe_id"])
+                payment_options = pay.get_payment_options(
+                    full_resp["stripe_id"])
                 full_resp["payment_options"] = payment_options
                 print(full_resp)
                 response = app.response_class(response=json.dumps(full_resp),
@@ -113,7 +114,6 @@ def identify_user():
         return response
     else:
         return app.response_class(status=404)
-
 
 
 ### CONFIRM PASSWORD ###
@@ -229,24 +229,29 @@ def card_options():
 
 @app.route('/addpayment/', methods=['POST'])
 def create_payment():
-    stripeid = request.form["stripeid"]
-    card_num = request.form["card_num"]
-    exp_month = request.form["exp_month"]
-    exp_year = request.form["exp_year"]
-    cvc = request.form["cvc"]
-    resp = pay.add_payment_method(stripeid, card_num, exp_month, exp_year, cvc)
-    return app.response_class(status=200, response=json.dumps(resp),
-                              mimetype='application/json')
+    if request.method == 'POST':
+        print("beepboop")
+        stripeid = request.form["stripeid"]
+        card_num = request.form["card_num"]
+        exp_month = request.form["exp_month"]
+        exp_year = request.form["exp_year"]
+        cvc = request.form["cvc"]
+        resp = pay.add_payment_method(
+            stripeid, card_num, exp_month, exp_year, cvc)
+        return app.response_class(status=200, response=json.dumps(resp),
+                                  mimetype='application/json')
 
 
 @app.route('/chargecard/', methods=['POST'])
 def charge_card():
-    source = request.form["payment_token"]
-    amount = request.form["amount"]
-    currency = 'usd'
-    resp = pay.charge_card(source)
-    return app.response_class(status=200, response=json.dumps(resp),
-                              mimetype='application/json')
+    if request.method == 'POST':
+        print("boop*beep")
+        source = request.form["payment_token"]
+        amount = request.form["amount"]
+        userid = request.form["stripeuser"]
+        resp = pay.charge_card(amount, source, userid)
+        return app.response_class(status=200, response=json.dumps(resp),
+                                  mimetype='application/json')
 
 # return payment method
 # create/charge card
