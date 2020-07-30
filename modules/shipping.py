@@ -6,7 +6,7 @@ import requests
 
 headers = {
   'Content-Type': 'application/json',
-  'Authorization': 'Bearer sand_uQXMIPKfuVmebaIyOFTkEO6ziXpC0W3Gswd/MUkV0Xo=',
+  'Authorization': 'Bearer prod_7McE+OFpT6gapuLK5BID0Z+wXlL7h0AI1tSXjmhTVvM=',
   'User-Agent': 'Mozilla/5.0'
 }
 
@@ -121,12 +121,12 @@ def create_shipment(userid, courierid, platform_name, platform_order_number,
 def get_shipments(userid):
     query = f"SELECT easyshipid FROM labels WHERE userid = \'{userid}\'"
     data = inter.execute_read_query(query)
-    shipment_list = []
+    resp = []
     for shipment in data[0]:
-        shipment_list.append(shipment)
-    resp = requests.post('https://api.easyship.com/shipment/v1/shipments/ESUS10035438',
-                         headers=headers)
-    print(resp)
+    	resp.append(requests.post(f'https://api.easyship.com/shipment/v1/shipments/{shipment}',
+                 	          headers=headers))
+    	print(requests.post(f'https://api.easyship.com/shipment/v1/shipments/{shipment}',
+                                  headers=headers))
     return resp
 
 

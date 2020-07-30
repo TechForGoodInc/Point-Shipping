@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, json
+from flask import Flask, render_template, request, json, jsonify
 from flask_cors import CORS
 import requests
 from modules import interface as inter
@@ -13,24 +13,22 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 
 
-@app.route('/getdatabase/', method=['GET'])
+@app.route('/getdatabase/', methods=['GET'])
 def getdatabase():
     query = "SELECT * FROM labels"
-    resp = inter.execute_read_query(read)
+    resp = inter.execute_read_query(query)
     return app.response_class(status=200, response=json.dumps(resp))
 
 
 # userid is the same as the package deliver number
 @app.route('/getpackages/<userid>/', methods=['GET'])
 def packages(userid):
-    print("asdfler")
     resp = ship.get_shipments(userid)
     print(resp)
     if resp:
         return app.response_class(status=200)
     else:
         return app.response_class(status=400)
-
 
 ### POST AND DELETE ###
 # post creates a new user, delete deletes a user
