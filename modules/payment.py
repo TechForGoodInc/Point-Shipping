@@ -4,6 +4,7 @@ from modules import interface as inter
 
 stripe.api_key = "sk_test_51H60XYAzJnRyZcvUC1Fanr3dfwLFo6XR1Ne1wq231HFeev2813AaQZXHQQWSrv2NT3jnwUqrqDapYvivHoMr051l00tz2S4nM2"
 
+
 # customer's metadata will contain IDs of their charges (added
 # manually by us)
 def new_user(userid, email):
