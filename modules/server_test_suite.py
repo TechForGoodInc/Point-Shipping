@@ -30,7 +30,7 @@ modify_false = {'id': 50, 'email': 'nobody@gmail.com'}
 
 # get user id, returns '1'
 # use requests.get('http://127.0.0.1:5000/identuser/', data=input_email)
-input_email = {'email': 'tellabella@aol.com'}
+input_email = {'email': 'tellabella@aol.com', 'username': 'donatellaversace'}
 
 # test out the function of getting rates by sending package details and
 # recieving the shipping rate options (choose rate in separate function)
@@ -134,5 +134,5 @@ create_payment_method = {'default': 'False', 'card_num': '4242424242424242',
 charge_card = {'payment_token': 'pm_1H9yYXAzJnRyZcvUNdL1Sa6H', 'amount': 123.4}
 
 
-
+resp = requests.get('http://127.0.0.1:5000/identuser/', data=input_email)
 print(resp.content)

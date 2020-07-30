@@ -66,7 +66,7 @@ def user():
         return app.response_class(status=400)
 
 
-
+### CHECK IF USERNAME IS ALREADY IN USE ###
 @app.route('/userexists/', methods=['GET'])
 def user_exists():
     if request.method == 'GET':
@@ -74,8 +74,6 @@ def user_exists():
         check = inter.username_exists(username)
     return app.response_class(status=200, response=json.dumps(check),
                               mimetime='application/json')
-
-
 
 
 ### MODIFY USER ###
@@ -114,16 +112,20 @@ def update_user(col_name):
 @app.route('/identuser/', methods=['POST'])
 def identify_user():
     email = request.form['email']
+    username = request.form['username']
     if inter.user_exists(email, "email"):
         resp = inter.execute_read_query(
             f"SELECT * FROM users WHERE email = \'{email}\'")
         key_list = ["username", "id", "email", "sender", "street",
                     "city", "state", "zip", "country", "password"]
-        full_resp = dict(zip(key_list, resp[0]))
-        response = app.response_class(response=json.dumps(full_resp),
-                                      status=200,
-                                      mimetype='application/json')
-        return response
+        if username == key_list["username"]:
+            full_resp = dict(zip(key_list, resp[0]))
+            response = app.response_class(response=json.dumps(full_resp),
+                                          status=200,
+                                          mimetype='application/json')
+            return response
+        else:
+            return app.response_class(status=409)
     else:
         return app.response_class(status=404)
 
@@ -266,3 +268,6 @@ def charge_card():
 # create/charge card
 # sudo service apache2 restart
 # cat /var/log/apache2/error.log
+
+
+# attach customer to charges
