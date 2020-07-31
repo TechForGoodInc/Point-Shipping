@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, json, jsonify
+from flask import Flask, render_template, request, json
 from flask_cors import CORS
 import requests
 from modules import interface as inter
@@ -26,7 +26,7 @@ def packages(userid):
     resp = ship.get_shipments(userid)
     print(resp)
     if resp:
-        return app.response_class(status=200, response=jsonify(resp))
+        return app.response_class(status=200)
     else:
         return app.response_class(status=400)
 
@@ -171,6 +171,7 @@ def validate():
 @app.route('/getrates/', methods=['POST'])
 def getrates():
     if request.method == 'POST':
+        print("boop")
         resp = ship.select_rate(request.form['origin_city'],
                                 request.form['origin_state'],
                                 request.form['origin_country'],
@@ -191,13 +192,16 @@ def getrates():
             return app.response_class(status=201, response=json.dumps(resp),
                                       mimetype='application/json')
         except KeyError:
-            return app.response_class(status=200, response=json.dumps(resp),
+            return app.response_class(status=400, response=json.dumps(resp),
                                       mimetype='application/json')
-
+        else:
+            return app.response_class(status=200)
 
 ### ADDS PACKAGE ###
 # requires full package information to create package object
 # through easyship
+
+
 @app.route('/addpackage/', methods=['POST'])
 def addpackage():
     user_id = request.form['user_id']
@@ -221,14 +225,14 @@ def addpackage():
                                 request.form['customs_val'],
                                 request.form['dest_email'])
     if type(resp) is not list:
-        return app.response_class(status=500, response=json.dumps(resp))
+        return app.response_class(status=500, response=json.dumps(resp), mimetype='application/json')
     else:
         print(resp)
         success_check = inter.record_package(user_id, resp[0], resp[1])
         print(success_check)
         # resp[0] = courierid, resp[1] = shipmentid
         label_resp = ship.buy_labels(resp)
-        return app.response_class(status=200, response=json.dumps(label_resp))
+        return app.response_class(status=200, response=json.dumps(label_resp), mimetype='application/json')
 
 
 @app.route('/deletepackage/', methods=['DELETE'])

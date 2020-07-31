@@ -6,7 +6,7 @@ import requests
 
 headers = {
   'Content-Type': 'application/json',
-  'Authorization': 'Bearer psand_uQXMIPKfuVmebaIyOFTkEO6ziXpC0W3Gswd/MUkV0Xo=',
+  'Authorization': 'Bearer sand_uQXMIPKfuVmebaIyOFTkEO6ziXpC0W3Gswd/MUkV0Xo=',
   'User-Agent': 'Mozilla/5.0'
 }
 
