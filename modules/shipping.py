@@ -6,7 +6,7 @@ import requests
 
 headers = {
   'Content-Type': 'application/json',
-  'Authorization': 'Bearer prod_7McE+OFpT6gapuLK5BID0Z+wXlL7h0AI1tSXjmhTVvM=',
+  'Authorization': 'Bearer psand_uQXMIPKfuVmebaIyOFTkEO6ziXpC0W3Gswd/MUkV0Xo=',
   'User-Agent': 'Mozilla/5.0'
 }
 
@@ -123,10 +123,10 @@ def get_shipments(userid):
     data = inter.execute_read_query(query)
     resp = []
     for shipment in data[0]:
-    	resp.append(requests.post(f'https://api.easyship.com/shipment/v1/shipments/{shipment}',
-                 	          headers=headers))
-    	print(requests.post(f'https://api.easyship.com/shipment/v1/shipments/{shipment}',
+        resp.append(requests.post(f'https://api.easyship.com/shipment/v1/shipments/{shipment}',
                                   headers=headers))
+        print(requests.post(f'https://api.easyship.com/shipment/v1/shipments/{shipment}',
+                            headers=headers))
     return resp
 
 
