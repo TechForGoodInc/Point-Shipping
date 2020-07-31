@@ -26,9 +26,10 @@ def packages(userid):
     resp = ship.get_shipments(userid)
     print(resp)
     if resp:
-        return app.response_class(status=200)
+        return app.response_class(status=200, response=jsonify(resp))
     else:
         return app.response_class(status=400)
+
 
 ### POST AND DELETE ###
 # post creates a new user, delete deletes a user
