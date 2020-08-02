@@ -4,6 +4,7 @@ import requests
 from modules import interface as inter
 from modules import shipping as ship
 from modules import payment as pay
+from modules import send_email as mail
 
 ### BASIC INITIALIATION ###
 app = Flask(__name__)
@@ -225,14 +226,16 @@ def addpackage():
                                 request.form['customs_val'],
                                 request.form['dest_email'])
     if type(resp) is not list:
-        return app.response_class(status=500, response=json.dumps(resp), mimetype='application/json')
+        return app.response_class(status=500, response=json.dumps(resp),
+                                  mimetype='application/json')
     else:
         print(resp)
         success_check = inter.record_package(user_id, resp[0], resp[1])
         print(success_check)
         # resp[0] = courierid, resp[1] = shipmentid
         label_resp = ship.buy_labels(resp)
-        return app.response_class(status=200, response=json.dumps(label_resp), mimetype='application/json')
+        return app.response_class(status=200, response=json.dumps(label_resp),
+                                  mimetype='application/json')
 
 
 @app.route('/deletepackage/', methods=['DELETE'])
@@ -272,6 +275,17 @@ def charge_card():
     if request.method == 'POST':
         amount = request.form["amount"]
         resp = pay.charge_card(amount)
+        return app.response_class(status=200, response=json.dumps(resp),
+                                  mimetype='application/json')
+
+
+@app.route('/sendemail/', methods=['POST'])
+def send_email():
+    email = request.form['email']
+    resp = mail.send_email(email)
+    if not resp:
+        return app.response_class(status=500)
+    else:
         return app.response_class(status=200, response=json.dumps(resp),
                                   mimetype='application/json')
 
