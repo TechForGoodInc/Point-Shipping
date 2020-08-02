@@ -50,10 +50,10 @@ def execute_read_query(query, arguments=None):
             return False
 
 
-### CHECK IF USER EXISTS ###
-def user_exists(userid, column_name="username"):
+### CHECK IF USER ASPECT EXISTS ###
+def user_exists(userval, column_name="username"):
     user_exist = execute_read_query(
-        f"SELECT COUNT(*) FROM users WHERE {column_name} = \'{userid}\'")
+        f"SELECT COUNT(*) FROM users WHERE {column_name} = \'{userval}\'")
     exist_check = user_exist[0][0]
     return exist_check > 0
 
