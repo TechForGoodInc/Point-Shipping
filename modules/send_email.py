@@ -23,3 +23,7 @@ def send_email(user_email):
             return code
     except smtplib.SMTPRecipientsRefused:
         return False
+    except SMTPSenderRefused:
+        return False
+    except SMTPDataError:
+        return False
