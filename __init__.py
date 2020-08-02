@@ -282,12 +282,15 @@ def charge_card():
 @app.route('/sendemail/', methods=['POST'])
 def send_email():
     email = request.form['email']
-    resp = mail.send_email(email)
-    if not resp:
-        return app.response_class(status=500)
+    if inter.user_exists(email, "email"):
+        resp = mail.send_email(email)
+        if resp:
+            return app.response_class(status=200, response=json.dumps(resp),
+                                      mimetype='application/json')
+        else:
+            return app.response_class(status=500, response="email not sent")
     else:
-        return app.response_class(status=200, response=json.dumps(resp),
-                                  mimetype='application/json')
+        return app.response_class(status=404)
 
 # return payment method
 # create/charge card
