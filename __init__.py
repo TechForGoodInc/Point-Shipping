@@ -247,6 +247,7 @@ def deletepackage():
                               response=json.dumps(check))
 
 
+### RETURN THE CARD OPTIONS FOR A GIVEN USER ###
 @app.route('/cardoptions/', methods=['POST'])
 def card_options():
     userid = request.form["userid"]
@@ -255,6 +256,7 @@ def card_options():
                               mimetype='application/json')
 
 
+### ADD CREDIT CARD TO USER'S STRIPE ACCOUNT ###
 @app.route('/addpayment/', methods=['POST'])
 def create_payment():
     if request.method == 'POST':
@@ -270,6 +272,7 @@ def create_payment():
                                   mimetype='application/json')
 
 
+### CHARGE THE CARD STORED IN STRIPE ###
 @app.route('/chargecard/', methods=['POST'])
 def charge_card():
     if request.method == 'POST':
@@ -279,6 +282,7 @@ def charge_card():
                                   mimetype='application/json')
 
 
+### SEND RECOVERY CODE AND UPDATE CODE IN TABLE ###
 @app.route('/sendcode/', methods=['POST'])
 def send_email():
     email = request.form['email']
@@ -288,18 +292,19 @@ def send_email():
         if resp:
             return app.response_class(status=200)
         else:
-            return app.response_class(status=500, response="email not sent")
+            return app.response_class(status=500)
     else:
         return app.response_class(status=404)
 
 
-@app.route('/sendemail/', methods=['POST'])
-def send_email():
-    email_type = request.form["type"]
-    email = request.form["email"]
-    if email_type == "send_label":
-        label = request.form["label"]
-        resp = email.send_label(label)
+@app.route('/recoverycheck/', methods=['POST'])
+def recovery_check():
+    userid = request.form["id"]
+    code = request.form["code"]
+    if inter.code_check(code, userid):
+        return app.response_class(status=200)
+    else:
+        return app.response_class(status=500)
 
 # return payment method
 # create/charge card
