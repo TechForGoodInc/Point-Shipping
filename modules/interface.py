@@ -69,9 +69,6 @@ def username_exists(username):
         return "False"
 
 
-username_exists('donatellaversace')
-
-
 ### CHECK IF PASSWORDS MATCH ###
 # userpassword = b'text'
 def password_match(username, input_password):
@@ -93,6 +90,12 @@ def encrypt_password(password_input):
 def record_package(userid, courierid, shipmentid):
     query = f"""INSERT INTO labels VALUES (\'{userid}\', \'{courierid}\',
                 \'{shipmentid}\')"""
+    success_check = execute_query(query)
+    return success_check
+
+
+def update_code(code, userid):
+    query = f"UPDATE users SET \"recoverid\" = \'{code}\' WHERE \"id\" = \'{code}\'"
     success_check = execute_query(query)
     return success_check
 

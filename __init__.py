@@ -229,11 +229,11 @@ def addpackage():
         return app.response_class(status=500, response=json.dumps(resp),
                                   mimetype='application/json')
     else:
-        print(resp)
-        success_check = inter.record_package(user_id, resp[0], resp[1])
-        print(success_check)
         # resp[0] = courierid, resp[1] = shipmentid
         label_resp = ship.buy_labels(resp)
+        success_check = inter.record_package(user_id, resp[0], resp[1])
+        print(label_resp)
+        print(success_check)
         return app.response_class(status=200, response=json.dumps(label_resp),
                                   mimetype='application/json')
 
@@ -279,18 +279,27 @@ def charge_card():
                                   mimetype='application/json')
 
 
-@app.route('/sendemail/', methods=['POST'])
+@app.route('/sendcode/', methods=['POST'])
 def send_email():
     email = request.form['email']
+    userid = request.form['userid']
     if inter.user_exists(email, "email"):
-        resp = mail.send_email(email)
+        resp = mail.send_code(email, userid)
         if resp:
-            return app.response_class(status=200, response=json.dumps(resp),
-                                      mimetype='application/json')
+            return app.response_class(status=200)
         else:
             return app.response_class(status=500, response="email not sent")
     else:
         return app.response_class(status=404)
+
+
+@app.route('/sendemail/', methods=['POST'])
+def send_email():
+    email_type = request.form["type"]
+    email = request.form["email"]
+    if email_type == "send_label":
+        label = request.form["label"]
+        resp = email.send_label(label)
 
 # return payment method
 # create/charge card
