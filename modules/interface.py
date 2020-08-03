@@ -69,9 +69,6 @@ def username_exists(username):
         return "False"
 
 
-username_exists('donatellaversace')
-
-
 ### CHECK IF PASSWORDS MATCH ###
 # userpassword = b'text'
 def password_match(username, input_password):
@@ -96,6 +93,17 @@ def record_package(userid, courierid, shipmentid):
     success_check = execute_query(query)
     return success_check
 
+
+def update_code(code, userid):
+    query = f"""UPDATE users SET \"recoverid\" = \'{code}\' WHERE \"id\" = \'{code}\'"""
+    success_check = execute_query(query)
+    return success_check
+
+
+def code_check(code, userid):
+    query = f"""SELECT COUNT(*) FROM users WHERE \"id\" = \'{userid}\' AND \"recoverid\" = \'{userid}\'"""
+    check = execute_read_query(query)
+    return check[0][0] > 0
 
 # for debugging: export FLASK_ENV=development
 

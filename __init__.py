@@ -229,11 +229,11 @@ def addpackage():
         return app.response_class(status=500, response=json.dumps(resp),
                                   mimetype='application/json')
     else:
-        print(resp)
-        success_check = inter.record_package(user_id, resp[0], resp[1])
-        print(success_check)
         # resp[0] = courierid, resp[1] = shipmentid
         label_resp = ship.buy_labels(resp)
+        success_check = inter.record_package(user_id, resp[0], resp[1])
+        print(label_resp)
+        print(success_check)
         return app.response_class(status=200, response=json.dumps(label_resp),
                                   mimetype='application/json')
 
@@ -247,6 +247,7 @@ def deletepackage():
                               response=json.dumps(check))
 
 
+### RETURN THE CARD OPTIONS FOR A GIVEN USER ###
 @app.route('/cardoptions/', methods=['POST'])
 def card_options():
     userid = request.form["userid"]
@@ -255,6 +256,7 @@ def card_options():
                               mimetype='application/json')
 
 
+### ADD CREDIT CARD TO USER'S STRIPE ACCOUNT ###
 @app.route('/addpayment/', methods=['POST'])
 def create_payment():
     if request.method == 'POST':
@@ -270,6 +272,7 @@ def create_payment():
                                   mimetype='application/json')
 
 
+### CHARGE THE CARD STORED IN STRIPE ###
 @app.route('/chargecard/', methods=['POST'])
 def charge_card():
     if request.method == 'POST':
@@ -279,18 +282,29 @@ def charge_card():
                                   mimetype='application/json')
 
 
-@app.route('/sendemail/', methods=['POST'])
+### SEND RECOVERY CODE AND UPDATE CODE IN TABLE ###
+@app.route('/sendcode/', methods=['POST'])
 def send_email():
     email = request.form['email']
+    userid = request.form['userid']
     if inter.user_exists(email, "email"):
-        resp = mail.send_email(email)
+        resp = mail.send_code(email, userid)
         if resp:
-            return app.response_class(status=200, response=json.dumps(resp),
-                                      mimetype='application/json')
+            return app.response_class(status=200)
         else:
-            return app.response_class(status=500, response="email not sent")
+            return app.response_class(status=500)
     else:
         return app.response_class(status=404)
+
+
+@app.route('/recoverycheck/', methods=['POST'])
+def recovery_check():
+    userid = request.form["id"]
+    code = request.form["code"]
+    if inter.code_check(code, userid):
+        return app.response_class(status=200)
+    else:
+        return app.response_class(status=500)
 
 # return payment method
 # create/charge card

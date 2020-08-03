@@ -11,6 +11,7 @@ create_users_table = """
 CREATE TABLE IF NOT EXISTS users (
   username TEXT NOT NULL,
   id INTEGER,
+  recoveryid INTEGER,
   email TEXT NOT NULL,
   sender TEXT NOT NULL,
   street VARCHAR,
@@ -26,7 +27,8 @@ create_label_table = """
 CREATE TABLE IF NOT EXISTS labels (
   userid INTEGER,
   courierid VARCHAR,
-  easyshipid VARCHAR
+  easyshipid VARCHAR,
+  label VARCHAR
 )
 """
 
