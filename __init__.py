@@ -18,16 +18,15 @@ if __name__ == '__main__':
 def getdatabase():
     query = "SELECT * FROM labels"
     resp = inter.execute_read_query(query)
-    return app.response_class(status=200, response=json.dumps(resp))
+    return app.response_class(status=200, response=json.dumps(resp), mimetype='application/json')
 
 
 # userid is the same as the package deliver number
 @app.route('/getpackages/<userid>/', methods=['GET'])
 def packages(userid):
     resp = ship.get_shipments(userid)
-    print(resp)
     if resp:
-        return app.response_class(status=200)
+        return app.response_class(status=200, response=json.dumps(resp), mimetype='application/json')
     else:
         return app.response_class(status=400)
 
@@ -306,6 +305,17 @@ def recovery_check():
     else:
         return app.response_class(status=500)
 
+
+@app.route('/sendlabel/', methods=['POST'])
+def send_label():
+    if request.method == 'POST':
+        print("here")
+        email = request.form["email"]
+        url = request.form["url"]
+        if mail.send_url(email, url):
+            return app.response_class(status=200)
+        else:
+            return app.response_class(status=500)
 # return payment method
 # create/charge card
 # sudo service apache2 restart
