@@ -1,7 +1,7 @@
 import smtplib
 import ssl
 import random
-import interface as inter
+from modules import interface as inter
 
 
 def send_code(user_email, userid):
@@ -17,20 +17,37 @@ def send_code(user_email, userid):
     Subject: Point Shipping Password Recovery
 
     Your password recovery code is {code}"""
-    try:
-        resp = inter.update_code(code, userid)
-        if resp:
-            try:
-                context = ssl.create_default_context()
-                with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-                    server.login(sender_email, password)
-                    server.sendmail(sender_email, receiver_email, message)
-                    return code
-            except smtplib.SMTPRecipientsRefused:
-                return False
-            except SMTPSenderRefused:
-                return False
-            except SMTPDataError:
-                return False
-        else:
+    resp = inter.update_code(code, userid)
+    if resp:
+        try:
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+                server.login(sender_email, password)
+                server.sendmail(sender_email, receiver_email, message)
+            return code
+        except smtplib.SMTPRecipientsRefused:
             return False
+        except SMTPSenderRefused:
+            return False
+        except SMTPDataError:
+            return False
+    else:
+        return False
+
+
+def send_label(email, url):
+    port = 465  # For SSL
+    smtp_server = "smtp.gmail.com"
+    sender_email = "pointshippingtest@gmail.com"
+    receiver_email = user_email
+    message = f"""\
+	Subject: Your Point Shipping Label
+	Please print out this label and affix it to your package.\
+	{url}"""
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
+        return True
+    except smtplib.SMTPRecipientsRefused:
+        return False
