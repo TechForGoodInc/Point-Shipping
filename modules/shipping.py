@@ -5,9 +5,9 @@ from modules import interface as inter
 import requests
 
 headers = {
-  'Content-Type': 'application/json',
-  'Authorization': 'Bearer sand_uQXMIPKfuVmebaIyOFTkEO6ziXpC0W3Gswd/MUkV0Xo=',
-  'User-Agent': 'Mozilla/5.0'
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer sand_uQXMIPKfuVmebaIyOFTkEO6ziXpC0W3Gswd/MUkV0Xo=',
+    'User-Agent': 'Mozilla/5.0'
 }
 
 
@@ -43,7 +43,7 @@ def select_rate(origin_city, origin_state, origin_country, origin_zip,
     ]
   }}
 """
-    query = values.format(origin_city=origin_city,      
+    query = values.format(origin_city=origin_city,
                           origin_state=origin_state,
                           origin_country=origin_country, origin_zip=origin_zip,
                           dest_city=dest_city, dest_state=dest_state,
@@ -122,11 +122,11 @@ def get_shipments(userid):
     query = f"SELECT easyshipid FROM labels WHERE userid = \'{userid}\'"
     data = inter.execute_read_query(query)
     resp = []
-    for shipment in data[0]:
-        resp.append(requests.post(f'https://api.easyship.com/shipment/v1/shipments/{shipment}',
-                                  headers=headers))
-        print(requests.post(f'https://api.easyship.com/shipment/v1/shipments/{shipment}',
-                            headers=headers))
+    for shipment in data:
+        shipment = shipment[0]
+        individual_resp = requests.get(
+            f"https://api.easyship.com/shipment/v1/shipments/{shipment}?format=PNG&label=4X6&commercial_invoice=4X6&packip_slip=4X6", headers=headers)
+        resp.append(json.loads(individual_resp.text)["shipment"])
     return resp
 
 
