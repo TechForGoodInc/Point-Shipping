@@ -153,14 +153,9 @@ def validate():
         query = f"SELECT * FROM users WHERE username = \'{username}\'"
         resp = inter.execute_read_query(query)
         if resp:
-<<<<<<< HEAD
             key_list = ["username", "id", "recovery_id", "email", "sender",
 			"street", "city", "state", "zip", "country",
                         "password"]
-=======
-            key_list = ["username", "id", "recovery_code", "email", "sender", "street",
-                        "city", "state", "zip", "country", "password"]
->>>>>>> 99cac822c9112c055483a96585827e6ae8beb740
             full_resp = dict(zip(key_list, resp[0]))
             stripe_id = pay.get_customer_id(full_resp["id"])
             full_resp["stripe_id"] = stripe_id
