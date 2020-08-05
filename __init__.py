@@ -173,7 +173,8 @@ def validate():
 @app.route('/getrates/', methods=['POST'])
 def getrates():
     if request.method == 'POST':
-        resp = ship.select_rate(request.form['origin_add1'],
+        rates_list = ship.select_rate(
+                                request.form['origin_add1'],
                                 request.form['origin_add2'],
                                 request.form['origin_city'],
                                 request.form['origin_state'],
@@ -190,11 +191,10 @@ def getrates():
                                 request.form['weight'], request.form['height'],
                                 request.form['width'], request.form['length'])
         try:
-            rates = resp['rates']
-            return app.response_class(status=201, response=json.dumps(resp),
+            return app.response_class(status=201, response=json.dumps(rates_list),
                                       mimetype='application/json')
         except KeyError:
-            return app.response_class(status=400, response=json.dumps(resp),
+            return app.response_class(status=400, response=json.dumps(rates_list),
                                       mimetype='application/json')
         else:
             return app.response_class(status=200)
