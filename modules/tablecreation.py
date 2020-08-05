@@ -1,4 +1,4 @@
-import interface as inter
+from modules import interface as inter
 
 create_stripe_id_table = """
 CREATE TABLE IF NOT EXISTS stripe (
