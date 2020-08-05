@@ -16,8 +16,9 @@ if __name__ == '__main__':
 
 @app.route('/getdatabase/', methods=['GET'])
 def getdatabase():
-    query = "SELECT * FROM labels"
+    query = "SELECT * FROM users"
     resp = inter.execute_read_query(query)
+    print(resp)
     return app.response_class(status=200, response=json.dumps(resp),
                               mimetype='application/json')
 
@@ -56,7 +57,7 @@ def user():
         sender_country = request.form['sender_country']
         unencrypted_pw = request.form['password']
         encrypted = inter.encrypt_password(unencrypted_pw)
-        quer1 = f"INSERT INTO users VALUES (\'{user_name}\', \'{idval}\',"
+        quer1 = f"INSERT INTO users VALUES (\'{user_name}\', \'{idval}\', \'000000\', "
         quer2 = f"\'{email}\', \'{sender_name}\', \'{sender_street}\',"
         quer3 = f"\'{sender_city}\', \'{sender_state}\', \'{sender_zip}\',"
         quer4 = f"\'{sender_country}\', \'{encrypted}\')"
@@ -99,8 +100,9 @@ def update_user(col_name):
             query = f"SELECT * FROM users WHERE id = \'{idval}\'"
             resp = inter.execute_read_query(query)
             if resp:
-                key_list = ["username", "id", "email", "sender", "street",
-                            "city", "state", "zip", "country", "password"]
+                key_list = ["username", "id", "recovery_key", "email",
+                            "sender", "street", "city", "state", "zip",
+                            "country", "password"]
                 full_resp = dict(zip(key_list, resp[0]))
                 stripe_id = pay.get_customer_id(full_resp["id"])
                 full_resp["stripe_id"] = stripe_id
@@ -126,7 +128,8 @@ def identify_user():
         resp = inter.execute_read_query(
             f"SELECT * FROM users WHERE email = \'{email}\'")
         key_list = ["username", "id", "email", "sender", "street",
-                    "city", "state", "zip", "country", "password"]
+                    "recovery_id", "city", "state", "zip", "country",
+                    "password"]
         if username == key_list["username"]:
             full_resp = dict(zip(key_list, resp[0]))
             response = app.response_class(response=json.dumps(full_resp),
@@ -150,8 +153,9 @@ def validate():
         query = f"SELECT * FROM users WHERE username = \'{username}\'"
         resp = inter.execute_read_query(query)
         if resp:
-            key_list = ["username", "id", "email", "sender", "street",
-                        "city", "state", "zip", "country", "password"]
+            key_list = ["username", "id", "recovery_id", "email", "sender",
+			"street", "city", "state", "zip", "country",
+                        "password"]
             full_resp = dict(zip(key_list, resp[0]))
             stripe_id = pay.get_customer_id(full_resp["id"])
             full_resp["stripe_id"] = stripe_id
