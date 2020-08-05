@@ -153,9 +153,14 @@ def validate():
         query = f"SELECT * FROM users WHERE username = \'{username}\'"
         resp = inter.execute_read_query(query)
         if resp:
+<<<<<<< HEAD
             key_list = ["username", "id", "recovery_id", "email", "sender",
 			"street", "city", "state", "zip", "country",
                         "password"]
+=======
+            key_list = ["username", "id", "recovery_code", "email", "sender", "street",
+                        "city", "state", "zip", "country", "password"]
+>>>>>>> 99cac822c9112c055483a96585827e6ae8beb740
             full_resp = dict(zip(key_list, resp[0]))
             stripe_id = pay.get_customer_id(full_resp["id"])
             full_resp["stripe_id"] = stripe_id
@@ -177,21 +182,22 @@ def validate():
 @app.route('/getrates/', methods=['POST'])
 def getrates():
     if request.method == 'POST':
-        resp = ship.select_rate(request.form['origin_city'],
+        resp = ship.select_rate(request.form['origin_add1'],
+                                request.form['origin_add2'],
+                                request.form['origin_city'],
                                 request.form['origin_state'],
                                 request.form['origin_country'],
                                 request.form['origin_zip'],
+                                request.form['origin_phone'],
+                                request.form['dest_add1'],
+                                request.form['dest_add2'],
                                 request.form['dest_city'],
                                 request.form['dest_state'],
                                 request.form['dest_country'],
                                 request.form['dest_zip'],
-                                request.form['tax_payer'],
-                                request.form['insured'],
+                                request.form['dest_phone'],
                                 request.form['weight'], request.form['height'],
-                                request.form['width'], request.form['length'],
-                                request.form['category'],
-                                request.form['currency'],
-                                request.form['customs_val'])
+                                request.form['width'], request.form['length'])
         try:
             rates = resp['rates']
             return app.response_class(status=201, response=json.dumps(resp),
