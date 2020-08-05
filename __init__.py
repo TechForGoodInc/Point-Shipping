@@ -154,7 +154,7 @@ def validate():
         resp = inter.execute_read_query(query)
         if resp:
             key_list = ["username", "id", "recovery_id", "email", "sender",
-			"street", "city", "state", "zip", "country",
+                        "street", "city", "state", "zip", "country",
                         "password"]
             full_resp = dict(zip(key_list, resp[0]))
             stripe_id = pay.get_customer_id(full_resp["id"])
@@ -177,7 +177,8 @@ def validate():
 @app.route('/getrates/', methods=['POST'])
 def getrates():
     if request.method == 'POST':
-        resp = ship.select_rate(request.form['origin_add1'],
+        rates_list = ship.select_rate(
+                                request.form['origin_add1'],
                                 request.form['origin_add2'],
                                 request.form['origin_city'],
                                 request.form['origin_state'],
@@ -194,11 +195,10 @@ def getrates():
                                 request.form['weight'], request.form['height'],
                                 request.form['width'], request.form['length'])
         try:
-            rates = resp['rates']
-            return app.response_class(status=201, response=json.dumps(resp),
+            return app.response_class(status=201, response=json.dumps(rates_list),
                                       mimetype='application/json')
         except KeyError:
-            return app.response_class(status=400, response=json.dumps(resp),
+            return app.response_class(status=400, response=json.dumps(rates_list),
                                       mimetype='application/json')
         else:
             return app.response_class(status=200)
