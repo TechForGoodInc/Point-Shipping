@@ -1,7 +1,7 @@
 import smtplib
 import ssl
 import random
-import interface as inter
+from modules import interface as inter
 
 
 def send_code(user_email, userid):
@@ -54,6 +54,3 @@ def send_url(receiver_email, url):
             return True
     except smtplib.SMTPException:
         return False
-
-
-print(send_url("pointshippingtest@gmail.com", "hi"))

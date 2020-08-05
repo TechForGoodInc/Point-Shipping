@@ -64,7 +64,7 @@ shipping_input_true = {'platform_name': 'Amazon',
                        'ecl.damoose@gmail.com', 'item_description':
                        'cat rain boots', 'weight': 15.23, 'height': 12.5,
                        'width': 6.5, 'length': 12, 'category': 'fashion',
-                       'currency': 'USD', 'customs_val': 35.01,
+                       'currency': 'USD', 'customs_val': 0,
                        'courier_id': '2bd30fb9-8f41-4fc3-950d-3675494ae318'}
 
 shipping_input_false = {'user_id': 1, 'dest_name': 'Mr. Reciever',
@@ -134,5 +134,7 @@ create_payment_method = {'default': 'False', 'card_num': '4242424242424242',
 charge_card = {'payment_token': 'pm_1H9yYXAzJnRyZcvUNdL1Sa6H', 'amount': 123.4}
 
 
-resp = requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input)
+resp = requests.post('http://127.0.0.1:5000/getrates/', data=rate_input_true)
+print(resp.content)
+resp = requests.post('http://127.0.0.1:5000/addpackage/', data=shipping_input_true)
 print(resp.content)

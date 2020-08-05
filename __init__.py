@@ -18,7 +18,8 @@ if __name__ == '__main__':
 def getdatabase():
     query = "SELECT * FROM labels"
     resp = inter.execute_read_query(query)
-    return app.response_class(status=200, response=json.dumps(resp), mimetype='application/json')
+    return app.response_class(status=200, response=json.dumps(resp),
+                              mimetype='application/json')
 
 
 # userid is the same as the package deliver number
@@ -26,7 +27,8 @@ def getdatabase():
 def packages(userid):
     resp = ship.get_shipments(userid)
     if resp:
-        return app.response_class(status=200, response=json.dumps(resp), mimetype='application/json')
+        return app.response_class(status=200, response=json.dumps(resp),
+                                  mimetype='application/json')
     else:
         return app.response_class(status=400)
 
@@ -171,7 +173,6 @@ def validate():
 @app.route('/getrates/', methods=['POST'])
 def getrates():
     if request.method == 'POST':
-        print("boop")
         resp = ship.select_rate(request.form['origin_city'],
                                 request.form['origin_state'],
                                 request.form['origin_country'],
@@ -309,7 +310,6 @@ def recovery_check():
 @app.route('/sendlabel/', methods=['POST'])
 def send_label():
     if request.method == 'POST':
-        print("here")
         email = request.form["email"]
         url = request.form["url"]
         if mail.send_url(email, url):
