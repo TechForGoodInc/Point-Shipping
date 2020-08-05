@@ -40,12 +40,5 @@ def select_rate(origin_add1, origin_add2, origin_city, origin_state,
     return shipment
 
 
-resp = select_rate('8008 18th Ave NE', '', 'Seattle', 'WA',
-                   'US', 98115, '206-491-3335', '1115 8th Ave', 'Box #4020',
-                   'Grinnell', 'IA', 'US', '50112', '206-491-3335',
-                   12, 3, 3, 6)
-print(resp)
-
-
 def get_package():
     parcel = easypost.Parcel.retrieve("prcl_...")
