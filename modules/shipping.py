@@ -37,8 +37,25 @@ def select_rate(origin_add1, origin_add2, origin_city, origin_state,
     shipment = easypost.Shipment.create(to_address=toAddress,
                                         from_address=fromAddress,
                                         parcel=parcel)
-    return shipment
+    rates_list = []
+    for val in shipment["rates"]:
+        item_aspects = []
+        keys = ["carrier", "carrier_account_id", "delivery_date",
+                "delivery_date_guaranteed", "delivery_days", "id",
+                "list_rate", "shipment_id"]
+        values = [val.carrier, val.carrier_account_id, val.delivery_date,
+                  val.delivery_date_guaranteed, val.delivery_days,
+                  val.id, val.list_rate, val.shipment_id]
+        item_dict = dict(zip(keys, values))
+        rates_list.append(item_dict)
+    return ates_list
 
+
+resp = select_rate('8008 18th Ave NE', '', 'Seattle', 'WA',
+                   'US', 98115, '206-491-3335', '1115 8th Ave', 'Box #4020',
+                   'Grinnell', 'IA', 'US', '50112', '206-491-3335',
+                   12, 3, 3, 6)
+print(resp)
 
 def get_package():
     parcel = easypost.Parcel.retrieve("prcl_...")
