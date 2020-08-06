@@ -194,7 +194,7 @@ def getrates():
             request.form['dest_phone'],
             request.form['weight'], request.form['height'],
             request.form['width'], request.form['length'])
-            return_rates = {'rates': rates_list}
+        return_rates = {'rates': rates_list}
         try:
             return app.response_class(status=201, response=json.dumps(return_rates),
                                       mimetype='application/json')
