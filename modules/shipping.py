@@ -12,8 +12,7 @@ easypost.api_key = 'EZTK9374380ba203453bba337fb902362c35KLlDx9ThFtAW7n0jbDPtzQ'
 def select_rate(origin_add1, origin_add2, origin_city, origin_state,
                 origin_country, origin_zip, origin_phone, dest_add1, dest_add2,
                 dest_city, dest_state, dest_country, dest_zip, dest_phone,
-                weight, height, width, length):
-    
+                weight, height, width, length):   
     fromAddress = easypost.Address.create(verify=["delivery"],
                                           street1=origin_add1,
                                           street2=origin_add2,
@@ -51,5 +50,17 @@ def select_rate(origin_add1, origin_add2, origin_city, origin_state,
     return rates_list
 
 
+<<<<<<< HEAD
 def get_package():
     parcel = easypost.Parcel.retrieve("prcl_...")
+=======
+def buy_label(shipping_id, rate_id):
+    shipment = easypost.Shipment.retrieve(shipping_id)
+    resp = shipment.buy(rate=rate_id)
+    return resp
+
+
+def get_package(shipment_id):
+    shipment = easypost.Shipment.retrieve(shipment_id)
+    return shipment
+>>>>>>> 99361e454dfe59f954f708184a02458e7f9897ab

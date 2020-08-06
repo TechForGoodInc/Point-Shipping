@@ -211,6 +211,7 @@ def getrates():
 @app.route('/addpackage/', methods=['POST'])
 def addpackage():
     user_id = request.form['user_id']
+<<<<<<< HEAD
     courier_id = request.form['courier_id']
     resp = 1
     if type(resp) is not list:
@@ -233,6 +234,15 @@ def deletepackage():
     print(check.status_code)
     return app.response_class(status=check.status_code,
                               response=json.dumps(check))
+=======
+    courier_id = request.form['rate_id']
+    shipment_id = request.form['shipment_id']
+    resp = ship.addpackage(shipping_id, rate_id)
+    print(resp)
+    query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{ship_id}\')"
+    return app.response_class(status=200, response=json.dumps(resp),
+                              mimetype='application/json')
+>>>>>>> 99361e454dfe59f954f708184a02458e7f9897ab
 
 
 ### RETURN THE CARD OPTIONS FOR A GIVEN USER ###
