@@ -12,8 +12,7 @@ easypost.api_key = 'EZTK9374380ba203453bba337fb902362c35KLlDx9ThFtAW7n0jbDPtzQ'
 def select_rate(origin_add1, origin_add2, origin_city, origin_state,
                 origin_country, origin_zip, origin_phone, dest_add1, dest_add2,
                 dest_city, dest_state, dest_country, dest_zip, dest_phone,
-                weight, height, width, length):
-    
+                weight, height, width, length):   
     fromAddress = easypost.Address.create(verify=["delivery"],
                                           street1=origin_add1,
                                           street2=origin_add2,
@@ -51,11 +50,12 @@ def select_rate(origin_add1, origin_add2, origin_city, origin_state,
     return ates_list
 
 
-resp = select_rate('8008 18th Ave NE', '', 'Seattle', 'WA',
-                   'US', 98115, '206-491-3335', '1115 8th Ave', 'Box #4020',
-                   'Grinnell', 'IA', 'US', '50112', '206-491-3335',
-                   12, 3, 3, 6)
-print(resp)
+def buy_label(shipping_id, rate_id):
+    shipment = easypost.Shipment.retrieve(shipping_id)
+    resp = shipment.buy(rate=rate_id)
+    return resp
 
-def get_package():
-    parcel = easypost.Parcel.retrieve("prcl_...")
+
+def get_package(shipment_id):
+    shipment = easypost.Shipment.retrieve(shipment_id)
+    return shipment
