@@ -26,7 +26,7 @@ def getdatabase():
 # userid is the same as the package deliver number
 @app.route('/getpackages/<userid>/', methods=['GET'])
 def packages(userid):
-    resp = ship.get_shipments(userid)
+    resp = 1
     if resp:
         return app.response_class(status=200, response=json.dumps(resp),
                                   mimetype='application/json')
@@ -178,30 +178,30 @@ def validate():
 def getrates():
     if request.method == 'POST':
         rates_list = ship.select_rate(
-                                request.form['origin_add1'],
-                                request.form['origin_add2'],
-                                request.form['origin_city'],
-                                request.form['origin_state'],
-                                request.form['origin_country'],
-                                request.form['origin_zip'],
-                                request.form['origin_phone'],
-                                request.form['dest_add1'],
-                                request.form['dest_add2'],
-                                request.form['dest_city'],
-                                request.form['dest_state'],
-                                request.form['dest_country'],
-                                request.form['dest_zip'],
-                                request.form['dest_phone'],
-                                request.form['weight'], request.form['height'],
-                                request.form['width'], request.form['length'])
+            request.form['origin_add1'],
+            request.form['origin_add2'],
+            request.form['origin_city'],
+            request.form['origin_state'],
+            request.form['origin_country'],
+            request.form['origin_zip'],
+            request.form['origin_phone'],
+            request.form['dest_add1'],
+            request.form['dest_add2'],
+            request.form['dest_city'],
+            request.form['dest_state'],
+            request.form['dest_country'],
+            request.form['dest_zip'],
+            request.form['dest_phone'],
+            request.form['weight'], request.form['height'],
+            request.form['width'], request.form['length'])
+        return_rates = {'rates': rates_list}
         try:
-            return app.response_class(status=201, response=json.dumps(rates_list),
+            return app.response_class(status=201, response=json.dumps(return_rates),
                                       mimetype='application/json')
         except KeyError:
-            return app.response_class(status=400, response=json.dumps(rates_list),
-                                      mimetype='application/json')
+            return app.response_class(status=205, response=json.dumps(return_rates), mimetype='application/json')
         else:
-            return app.response_class(status=200)
+            return app.response_class(status=500)
 
 ### ADDS PACKAGE ###
 # requires full package information to create package object
@@ -211,12 +211,13 @@ def getrates():
 @app.route('/addpackage/', methods=['POST'])
 def addpackage():
     user_id = request.form['user_id']
-    courier_id = request.form['rate_id']
+    rate_id = request.form['rate_id']
     shipment_id = request.form['shipment_id']
-    resp = ship.addpackage(shipping_id, rate_id)
-    print(resp)
-    query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{ship_id}\')"
-    return app.response_class(status=200, response=json.dumps(resp),
+    resp = ship.buy_label(shipment_id, rate_id)
+    query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{shipment_id}\')"
+    check = inter.execute_query(query)
+    return_dict = {'resp': resp}
+    return app.response_class(status=200, response=json.dumps(return_dict),
                               mimetype='application/json')
 
 
