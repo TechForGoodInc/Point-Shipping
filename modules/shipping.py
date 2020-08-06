@@ -1,8 +1,9 @@
 import easypost
 import json
+from modules import interface as inter
 #from modules import interface as inter
 
-easypost.api_key = 'EZTK6acab147147b466d9f28b4b65e1b8191Q1a3j4lvc4HbVNU100jp8g'
+easypost.api_key = 'EZAK9374380ba203453bba337fb902362c35cB0jw6UajWMU1eb0vMEsxw'
 
 # Takes in aspects of a package and returns rate options
 # in the form of a dictionary containing the carriers and
@@ -53,15 +54,24 @@ def select_rate(origin_add1, origin_add2, origin_city, origin_state,
 
 def buy_label(shipping_id, rate_id):
     shipment = easypost.Shipment.retrieve(shipping_id)
-    print("\n\n\n\n\n")
-    print(shipment.lowest_rate())
-    print("\n\n\n\n\n")
-    print(shipment)
-    resp = shipment.buy(rate=shipment.lowest_rate())
-    print(resp)
+    rates = shipment.rates
+    for rate in rates:
+        if rate_id == rate.id:
+            selected_rate = rate
+    print(type(selected_rate))
+    resp = shipment.buy(rate=selected_rate)
     return resp
 
 
-def get_package(shipment_id):
-    shipment = easypost.Shipment.retrieve(shipment_id)
-    return shipment
+def get_package(user_id):
+    query = f"SELECT shipid FROM labels WHERE userid = \'{user_id}\'"
+    packages = inter.execute_read_query(query)
+    resp = []
+    for package in packages:
+        resp.append(easypost.Shipment.retrieve(package))
+    return resp
+
+
+def delete_package(package_id):
+    query = f"DELETE FROM labels WHERE shipid IS {package_id}"
+    return inter.execute_query(query)

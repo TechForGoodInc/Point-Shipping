@@ -26,7 +26,7 @@ def getdatabase():
 # userid is the same as the package deliver number
 @app.route('/getpackages/<userid>/', methods=['GET'])
 def packages(userid):
-    resp = 1
+    resp = ship.get_package(userid)
     if resp:
         return app.response_class(status=200, response=json.dumps(resp),
                                   mimetype='application/json')
@@ -194,33 +194,43 @@ def getrates():
             request.form['dest_phone'],
             request.form['weight'], request.form['height'],
             request.form['width'], request.form['length'])
-        return_rates = {'rates': rates_list}
         try:
-            return app.response_class(status=201, response=json.dumps(return_rates),
+            return app.response_class(status=201,
+                                      response=json.dumps(rates_list),
                                       mimetype='application/json')
         except KeyError:
-            return app.response_class(status=205, response=json.dumps(return_rates), mimetype='application/json')
+            return app.response_class(status=400,
+                                      response=json.dumps(rates_list),
+                                      mimetype='application/json')
         else:
-            return app.response_class(status=500)
+            return app.response_class(status=200)
+
 
 ### ADDS PACKAGE ###
-# requires full package information to create package object
-# through easyship
-
-
-@app.route('/addpackage/', methods=['POST'])
+# purchases and records purchase of package
+# returns package label information
+@app.route('/buylabel/', methods=['POST'])
 def addpackage():
     user_id = request.form['user_id']
-    rate_id = request.form['rate_id']
+    courier_id = request.form['rate_id']
     shipment_id = request.form['shipment_id']
     resp = ship.buy_label(shipment_id, rate_id)
     query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{shipment_id}\')"
-    check = inter.execute_query(query)
-    label = resp.postage_label.label_url
-    print(label)
     return_dict = {'label': label}
+    success_check = inter.execute_query(query)
+    print(success_check)
     return app.response_class(status=200, response=json.dumps(return_dict),
                               mimetype='application/json')
+
+
+### DELETE PACKAGE ###
+@app.route('/deletepackage/', methods=['POST'])
+def delete_package():
+    package_id = request.form['package_id']
+    if ship.delete_package(package_id):
+        return app.response_class(status=200)
+    else:
+        return app.response_class(status=500)
 
 
 ### RETURN THE CARD OPTIONS FOR A GIVEN USER ###
@@ -298,4 +308,7 @@ def send_label():
 # cat /var/log/apache2/error.log
 
 
-# attach customer to charges
+# get rates only returns a few elements
+# search through the rates to match up the id to the object
+
+# retrieve rates function
