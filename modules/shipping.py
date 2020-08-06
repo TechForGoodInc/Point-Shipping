@@ -1,5 +1,6 @@
 import easypost
 import json
+from modules import interface as inter
 #from modules import interface as inter
 
 easypost.api_key = 'EZAK9374380ba203453bba337fb902362c35cB0jw6UajWMU1eb0vMEsxw'
@@ -62,6 +63,10 @@ def buy_label(shipping_id, rate_id):
     return resp
 
 
-def get_package(shipment_id):
-    shipment = easypost.Shipment.retrieve(shipment_id)
-    return shipment
+def get_package(user_id):
+    query = f"SELECT shipid FROM labels WHERE userid = \'{user_id}\'"
+    packages = inter.execute_read_query(query)
+    resp = []
+    for package in packages:
+        resp.append(easypost.Shipment.retrieve(package))
+    return resp
