@@ -211,38 +211,13 @@ def getrates():
 @app.route('/addpackage/', methods=['POST'])
 def addpackage():
     user_id = request.form['user_id']
-<<<<<<< HEAD
-    courier_id = request.form['courier_id']
-    resp = 1
-    if type(resp) is not list:
-        return app.response_class(status=500, response=json.dumps(resp),
-                                  mimetype='application/json')
-    else:
-        # resp[0] = courierid, resp[1] = shipmentid
-        label_resp = ship.buy_labels(resp)
-        success_check = inter.record_package(user_id, resp[0], resp[1])
-        print(label_resp)
-        print(success_check)
-        return app.response_class(status=200, response=json.dumps(label_resp),
-                                  mimetype='application/json')
-
-
-@app.route('/deletepackage/', methods=['DELETE'])
-def deletepackage():
-    shipid = request.form['shipmentid']
-    check = ship.delete_package(shipid)
-    print(check.status_code)
-    return app.response_class(status=check.status_code,
-                              response=json.dumps(check))
-=======
-    courier_id = request.form['rate_id']
+    rate_id = request.form['rate_id']
     shipment_id = request.form['shipment_id']
-    resp = ship.addpackage(shipping_id, rate_id)
+    resp = ship.buy_label(shipment_id, rate_id)
     print(resp)
-    query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{ship_id}\')"
+    query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{shipment_id}\')"
     return app.response_class(status=200, response=json.dumps(resp),
                               mimetype='application/json')
->>>>>>> 99361e454dfe59f954f708184a02458e7f9897ab
 
 
 ### RETURN THE CARD OPTIONS FOR A GIVEN USER ###

@@ -2,8 +2,7 @@ import easypost
 import json
 #from modules import interface as inter
 
-easypost.api_key = 'EZTK9374380ba203453bba337fb902362c35KLlDx9ThFtAW7n0jbDPtzQ'
-
+easypost.api_key = 'EZTK6acab147147b466d9f28b4b65e1b8191Q1a3j4lvc4HbVNU100jp8g'
 
 # Takes in aspects of a package and returns rate options
 # in the form of a dictionary containing the carriers and
@@ -12,7 +11,7 @@ easypost.api_key = 'EZTK9374380ba203453bba337fb902362c35KLlDx9ThFtAW7n0jbDPtzQ'
 def select_rate(origin_add1, origin_add2, origin_city, origin_state,
                 origin_country, origin_zip, origin_phone, dest_add1, dest_add2,
                 dest_city, dest_state, dest_country, dest_zip, dest_phone,
-                weight, height, width, length):   
+                weight, height, width, length):
     fromAddress = easypost.Address.create(verify=["delivery"],
                                           street1=origin_add1,
                                           street2=origin_add2,
@@ -50,17 +49,16 @@ def select_rate(origin_add1, origin_add2, origin_city, origin_state,
     return rates_list
 
 
-<<<<<<< HEAD
-def get_package():
-    parcel = easypost.Parcel.retrieve("prcl_...")
-=======
 def buy_label(shipping_id, rate_id):
     shipment = easypost.Shipment.retrieve(shipping_id)
-    resp = shipment.buy(rate=rate_id)
+    print("\n\n\n\n\n")
+    print(shipment.lowest_rate())
+    print("\n\n\n\n\n")
+    print(shipment)
+    resp = shipment.buy(rate=shipment.lowest_rate())
     return resp
 
 
 def get_package(shipment_id):
     shipment = easypost.Shipment.retrieve(shipment_id)
     return shipment
->>>>>>> 99361e454dfe59f954f708184a02458e7f9897ab
