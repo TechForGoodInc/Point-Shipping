@@ -65,15 +65,3 @@ def buy_label(shipping_id, rate_id):
 def get_package(shipment_id):
     shipment = easypost.Shipment.retrieve(shipment_id)
     return shipment
-
-
-'''
-resp = select_rate('8008 18th Ave NE', '', 'Seattle', 'WA',
-                   'US', 98115, '206-491-3335', '1115 8th Ave', 'Box #4020',
-                   'Grinnell', 'IA', 'US', '50112', '206-491-3335',
-                   12, 3, 3, 6)
-'''
-shipping_id = 'shp_1f92b1296c6b4286a97458546e36ddf2'
-rate_id = 'rate_2a775937ba904c26b0d113e54c6fee84'
-resp = buy_label(shipping_id, rate_id)
-print(resp)
