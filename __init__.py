@@ -214,9 +214,10 @@ def addpackage():
     rate_id = request.form['rate_id']
     shipment_id = request.form['shipment_id']
     resp = ship.buy_label(shipment_id, rate_id)
-    print(resp)
     query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{shipment_id}\')"
-    return app.response_class(status=200, response=json.dumps(resp),
+    check = inter.execute_query(query)
+    return_dict = {'resp': resp}
+    return app.response_class(status=200, response=json.dumps(return_dict),
                               mimetype='application/json')
 
 

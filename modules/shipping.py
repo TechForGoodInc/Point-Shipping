@@ -8,6 +8,8 @@ easypost.api_key = 'EZTK6acab147147b466d9f28b4b65e1b8191Q1a3j4lvc4HbVNU100jp8g'
 # in the form of a dictionary containing the carriers and
 # their corresponding prices
 # length: inches, weight: ounces
+
+
 def select_rate(origin_add1, origin_add2, origin_city, origin_state,
                 origin_country, origin_zip, origin_phone, dest_add1, dest_add2,
                 dest_city, dest_state, dest_country, dest_zip, dest_phone,
@@ -56,6 +58,7 @@ def buy_label(shipping_id, rate_id):
     print("\n\n\n\n\n")
     print(shipment)
     resp = shipment.buy(rate=shipment.lowest_rate())
+    print(resp)
     return resp
 
 
