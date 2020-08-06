@@ -2,7 +2,7 @@ import easypost
 import json
 #from modules import interface as inter
 
-easypost.api_key = 'EZTK6acab147147b466d9f28b4b65e1b8191Q1a3j4lvc4HbVNU100jp8g'
+easypost.api_key = 'EZAK9374380ba203453bba337fb902362c35cB0jw6UajWMU1eb0vMEsxw'
 
 # Takes in aspects of a package and returns rate options
 # in the form of a dictionary containing the carriers and
