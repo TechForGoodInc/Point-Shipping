@@ -216,7 +216,9 @@ def addpackage():
     resp = ship.buy_label(shipment_id, rate_id)
     query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{shipment_id}\')"
     check = inter.execute_query(query)
-    return_dict = {'resp': resp}
+    label = resp.postage_label.label_url
+    print(label)
+    return_dict = {'label': label}
     return app.response_class(status=200, response=json.dumps(return_dict),
                               mimetype='application/json')
 
