@@ -211,45 +211,13 @@ def getrates():
 @app.route('/addpackage/', methods=['POST'])
 def addpackage():
     user_id = request.form['user_id']
-    courier_id = request.form['courier_id']
-    resp = ship.create_shipment(user_id, courier_id,
-                                request.form['platform_name'],
-                                request.form['platform_order_number'],
-                                request.form['dest_name'],
-                                request.form['dest_add1'],
-                                request.form['dest_add2'],
-                                request.form['dest_city'],
-                                request.form['dest_state'],
-                                request.form['dest_zip'],
-                                request.form['dest_country'],
-                                request.form['dest_phone'],
-                                request.form['item_description'],
-                                request.form['weight'], request.form['height'],
-                                request.form['width'], request.form['length'],
-                                request.form['category'],
-                                request.form['currency'],
-                                request.form['customs_val'],
-                                request.form['dest_email'])
-    if type(resp) is not list:
-        return app.response_class(status=500, response=json.dumps(resp),
-                                  mimetype='application/json')
-    else:
-        # resp[0] = courierid, resp[1] = shipmentid
-        label_resp = ship.buy_labels(resp)
-        success_check = inter.record_package(user_id, resp[0], resp[1])
-        print(label_resp)
-        print(success_check)
-        return app.response_class(status=200, response=json.dumps(label_resp),
-                                  mimetype='application/json')
-
-
-@app.route('/deletepackage/', methods=['DELETE'])
-def deletepackage():
-    shipid = request.form['shipmentid']
-    check = ship.delete_package(shipid)
-    print(check.status_code)
-    return app.response_class(status=check.status_code,
-                              response=json.dumps(check))
+    courier_id = request.form['rate_id']
+    shipment_id = request.form['shipment_id']
+    resp = ship.addpackage(shipping_id, rate_id)
+    print(resp)
+    query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{ship_id}\')"
+    return app.response_class(status=200, response=json.dumps(resp),
+                              mimetype='application/json')
 
 
 ### RETURN THE CARD OPTIONS FOR A GIVEN USER ###

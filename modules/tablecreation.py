@@ -26,9 +26,7 @@ CREATE TABLE IF NOT EXISTS users (
 create_label_table = """
 CREATE TABLE IF NOT EXISTS labels (
   userid INTEGER,
-  courierid VARCHAR,
-  easyshipid VARCHAR,
-  label VARCHAR
+  shipid VARCHAR
 )
 """
 
