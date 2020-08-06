@@ -70,3 +70,8 @@ def get_package(user_id):
     for package in packages:
         resp.append(easypost.Shipment.retrieve(package))
     return resp
+
+
+def delete_package(package_id):
+    query = f"DELETE FROM labels WHERE shipid IS {package_id}"
+    return inter.execute_query(query)
