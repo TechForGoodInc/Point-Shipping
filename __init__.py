@@ -178,22 +178,22 @@ def validate():
 def getrates():
     if request.method == 'POST':
         rates_list = ship.select_rate(
-                                request.form['origin_add1'],
-                                request.form['origin_add2'],
-                                request.form['origin_city'],
-                                request.form['origin_state'],
-                                request.form['origin_country'],
-                                request.form['origin_zip'],
-                                request.form['origin_phone'],
-                                request.form['dest_add1'],
-                                request.form['dest_add2'],
-                                request.form['dest_city'],
-                                request.form['dest_state'],
-                                request.form['dest_country'],
-                                request.form['dest_zip'],
-                                request.form['dest_phone'],
-                                request.form['weight'], request.form['height'],
-                                request.form['width'], request.form['length'])
+            request.form['origin_add1'],
+            request.form['origin_add2'],
+            request.form['origin_city'],
+            request.form['origin_state'],
+            request.form['origin_country'],
+            request.form['origin_zip'],
+            request.form['origin_phone'],
+            request.form['dest_add1'],
+            request.form['dest_add2'],
+            request.form['dest_city'],
+            request.form['dest_state'],
+            request.form['dest_country'],
+            request.form['dest_zip'],
+            request.form['dest_phone'],
+            request.form['weight'], request.form['height'],
+            request.form['width'], request.form['length'])
         try:
             return app.response_class(status=201,
                                       response=json.dumps(rates_list),
@@ -214,11 +214,12 @@ def addpackage():
     user_id = request.form['user_id']
     courier_id = request.form['rate_id']
     shipment_id = request.form['shipment_id']
-    resp = ship.buy_label(shipping_id, rate_id)
-    query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{ship_id}\')"
+    resp = ship.buy_label(shipment_id, rate_id)
+    query = f"INSERT INTO labels VALUES (\'{user_id}\', \'{shipment_id}\')"
+    return_dict = {'label': label}
     success_check = inter.execute_query(query)
     print(success_check)
-    return app.response_class(status=200, response=json.dumps(resp),
+    return app.response_class(status=200, response=json.dumps(return_dict),
                               mimetype='application/json')
 
 
@@ -305,3 +306,12 @@ def send_label():
 # create/charge card
 # sudo service apache2 restart
 # cat /var/log/apache2/error.log
+<<<<<<< HEAD
+=======
+
+
+# get rates only returns a few elements
+# search through the rates to match up the id to the object
+
+# retrieve rates function
+>>>>>>> 08fba0a51edd5057168365255f55aee8ea7890f3
