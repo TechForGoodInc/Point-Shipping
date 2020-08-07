@@ -1,7 +1,6 @@
 import easypost
 import json
 from modules import interface as inter
-# from modules import interface as inter
 
 easypost.api_key = 'EZTK6acab147147b466d9f28b4b65e1b8191Q1a3j4lvc4HbVNU100jp8g'
 
@@ -63,16 +62,52 @@ def buy_label(shipping_id, rate_id):
     return resp
 
 
+def get_ship_dict(shipment):
+    ship_dict = {}
+    toAddress = shipment.to_address
+    ship_dict["to_name"] = toAddress.name
+    ship_dict["to_street1"] = toAddress.street1
+    ship_dict["to_street2"] = toAddress.street2
+    ship_dict["to_city"] = toAddress.city
+    ship_dict["to_state"] = toAddress.state
+    ship_dict["to_zip"] = toAddress.zip
+    ship_dict["to_country"] = toAddress.country
+    ship_dict["to_phone"] = toAddress.phone
+    ship_dict["to_email"] = toAddress.email
+    fromAddress = shipment.from_address
+    ship_dict["from_name"] = fromAddress.name
+    ship_dict["from_street1"] = fromAddress.street1
+    ship_dict["from_street2"] = fromAddress.street2
+    ship_dict["from_city"] = fromAddress.city
+    ship_dict["from_state"] = fromAddress.state
+    ship_dict["from_zip"] = fromAddress.zip
+    ship_dict["from_country"] = fromAddress.country
+    ship_dict["from_phone"] = fromAddress.phone
+    ship_dict["from_email"] = fromAddress.email
+    parcel = shipment.parcel
+    ship_dict["length"] = parcel.length
+    ship_dict["width"] = parcel.width
+    ship_dict["height"] = parcel.height
+    ship_dict["weight"] = parcel.weight
+    rates = shipment.rates
+    rate_list = []
+    for rate in rates:
+        rate_dict = {}
+        rate_dict["price"] = rate.rate
+        rate_dict["carrier"] = rate.carrier_account_id
+        rate_dict["delivery_days"] = rate.delivery_days
+        rate_list.append(rate_dict)
+    ship_dict["rates"] = rate_list
+    return ship_dict
+
+
 def get_package(user_id):
     query = f"SELECT shipid FROM labels WHERE \"userid\" = {user_id}"
     packages = inter.execute_read_query(query)
     resp = []
     for package in packages:
         shipment = easypost.Shipment.retrieve(package[0])
-        ship_dict = {'toAddress': shipment["to_address"],
-                     'fromAddress': shipment["from_address"],
-                     'parcel': shipment["parcel"],
-                     'rates': shipment["rates"]}
+        ship_dict = get_ship_dict(shipment)
         resp.append(ship_dict)
     return resp
 
