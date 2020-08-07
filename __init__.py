@@ -307,9 +307,3 @@ def send_label():
 # create/charge card
 # sudo service apache2 restart
 # cat /var/log/apache2/error.log
-
-
-# get rates only returns a few elements
-# search through the rates to match up the id to the object
-
-# retrieve rates function
