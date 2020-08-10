@@ -102,6 +102,7 @@ def get_ship_dict(shipment):
 
 
 def get_package(user_id):
+    print("beep boop")
     query = f"SELECT shipid FROM labels WHERE \"userid\" = {user_id}"
     packages = inter.execute_read_query(query)
     resp = []
