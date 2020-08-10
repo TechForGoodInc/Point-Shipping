@@ -255,6 +255,7 @@ def create_payment():
         cvc = request.form["cvc"]
         resp = pay.add_payment_method(
             stripeid, card_num, exp_month, exp_year, cvc)
+        print(resp)
         return app.response_class(status=200, response=json.dumps(resp),
                                   mimetype='application/json')
 
