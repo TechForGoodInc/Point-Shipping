@@ -55,7 +55,9 @@ def retreiveData():
     return user
 # adds data to the database
 
+
 retreiveData()
+
 
 def pushData():
     firebase = pyrebase.initialize_app(firebaseConfig)
