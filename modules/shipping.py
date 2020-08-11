@@ -1,6 +1,6 @@
 import easypost
 import json
-from modules import interface as inter
+import interface as inter
 
 easypost.api_key = 'EZAK9374380ba203453bba337fb902362c35cB0jw6UajWMU1eb0vMEsxw'
 
@@ -102,9 +102,9 @@ def get_ship_dict(shipment):
 
 
 def get_package(user_id):
-    print("beep boop")
-    query = f"SELECT shipid FROM labels WHERE \"userid\" = {user_id}"
+    query = f"SELECT \'shipid\' FROM labels WHERE \"userid\" = {user_id}"
     packages = inter.execute_read_query(query)
+    print(packages)
     resp = []
     for package in packages:
         shipment = easypost.Shipment.retrieve(package[0])
@@ -112,6 +112,7 @@ def get_package(user_id):
         resp.append(ship_dict)
     return resp
 
+print(get_package(1))
 
 def delete_package(package_id):
     query = f"DELETE FROM labels WHERE \'shipid\' IS \'{package_id}\'"

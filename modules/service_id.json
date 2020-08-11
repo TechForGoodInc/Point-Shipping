@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "shippingpoint-01",
+  "private_key_id": "13769c067539dbb2fa06375f53cb0712942fcd1d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEugIBADANBgkqhkiG9w0BAQEFAASCBKQwggSgAgEAAoIBAQClImWPJ7/G6dkP\nr3dnV1CcDDm6gR61W78m/HjmYgpt1rpVLaoKZv310WtAyAnOnZPaRPSc+lbq49JE\ndIMvgFupFeEnqDjTObHhi3ljqEz1B7dLgT+B1qQmnfzzj4FL1k5GjweU1zRse/cz\n9Rc0j80VrsoeFXAlPZUI4+fOv84vA4J0Qj4Sm/l9z068/Ve3VbTT64m+0OwYeVfA\niKoaWcsLeaSFhvZLgBOCYZXGFoDU42+5KXVrCp6PoTlPj/WWFzeVnliKWg/uh8aN\nPxJW1NhhhMbnh3eCXqKY8h94rCfYIugoEWrg0QyflrDoqYoyn3Kq+p+cJHDfEvxo\nud1fpbu1AgMBAAECgf8UIB0NVWRwc0LN2cfm0FcCra31DPqxH7CSqWWsR+AwtfrM\nZsRSgDrZuqwkbDzFvm6s+CDXzarKKPndxFVr2wW3L1nbFQvX5ZaVGZ2xutE/2H2x\ngtvUKlSj+dBz3qMWmwe7+Bj0cUXyWSlhK7Dbg95HkwXb1/Q5YnstzWWmM1O6ZudP\ndshQ6EbSPH69l9zVKd0bYHb419+dwiu+G+caswBXAfVfE9uNKgB0EFJzrXbCKlxe\nJ/5h/p1b1uwmdCythPr6+ReefdrLynICPeEko2Wxhs27ZVxyDHjNRmkTyI5OFnnJ\nJDTJAmkMPr7V7axZE1b58GrEBql0UFVn9AM+PhECgYEA2MJb4ipRoWgD8D6PHPYC\n2eDKK5at06QE4ZlLGMeRpx4P4u8CWznU6QBnv80xFVfekm4SesNi+VrfGxqpaJ8f\nnWSLKBRdDtM1BtfJZdzJPi1c+3CXFBvSYNUEzo4eL2N99nQQYjHURl8UNfWkR7d3\n+fEHh36qT3/8xeXzDM8JRIcCgYEAwwd/2m4eGKvXiv20xGOSEIZ9f2WcKGCADfBu\nbRycm2bGfNY44WUu1QgAmfJVs2XNu2Eak8VKIKp3mwI5ODFF5NwfuLsLKw3SaLzz\nTxANu5WZ3q0Ypleyrah3D6qa06CX+U4eo4rBu++k/zWyUJ+tUOqIe1t7i2DtSTg3\n5EmYSOMCgYAuxurLSPSqz2aiLu31gwWkfUVD2NWUab3/7XPuWgsNtIgbIhcxFq7i\nxYqeMqrX/0lx8j0crxOp2jlxgPR0Nnq9HZiGQra+X0f/PQwiZl4rg+CgBnEkDsj8\nypup87OB6IejavKqLjSwJw6Wgnc8XtSOZLyKOgSI+YbUMkacSgWm+wKBgEiK7JKZ\n7RXuLVFkxy1ZgAYnkFyntesK4fbNXLW3M8VV+DSNFkE4erAAtwCMNDZzgo/VMaaP\nduApqC1/KTtukHntKttyr1fHX2FYDwR0izcgEUjTh9yvuCWCCS9JnSdkj8LKvPjF\n7wPxwqSvG3GDw1rasgN4Zr7UQc6/W4LNoRhTAoGAZrd0iXGP4Xy5PQ9KsnMaL8YJ\nyXuZIMNbfBoVSszJxEmHCY96HvnE9OqPcEiOPK1wQdrKTQ1wp6GH8Y7pTEalZc4w\n934pddtDh6Rsv8UsU6LCajxEdBQ0ZRqvyYdxeNLdoXsEVu5A8zUN00Oos1NB+PGO\nolaK6hz0QEW1aWByRB0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-rjdx9@shippingpoint-01.iam.gserviceaccount.com",
+  "client_id": "100990038812976212757",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-rjdx9%40shippingpoint-01.iam.gserviceaccount.com"
+}
