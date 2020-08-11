@@ -42,25 +42,14 @@ def login(email, password):
     user = authen.sign_in_with_email_and_password(email, password)
     db = firebase.database()
     comma_email = email.replace(".", ",")
-    resp = db.child("users").child(comma_email).get()
-    return resp.val()
+    resp = db.child("users").child(comma_email).get().val()
+    return resp['userid']
 
 
-print(login("test12@gmail.com", "test123"))
-
-
-def get_users():
-    firebase = pyrebase.initialize_app(firebaseConfig)
+def remove_user(email):
+    firebase = pyrebase.initialize_app(firebase_config)
     authen = firebase.auth()
     db = firebase.database()
-    print(db.child("users").get().val())
-
-
-def remove_user():
-    firebase = pyrebase.initialize_app(firebaseConfig)
-    authen = firebase.auth()
-    db = firebase.database()
-    print(db.child("users"))
-    db.child("user").child("key").remove()
-    print("User removed!")
-    return 1
+    comma_email = email.replace(".", ",")
+    db.child("user").child(comma_email).remove()
+    return True
