@@ -3,7 +3,7 @@ import firebase_admin
 from firebase_admin import credentials
 import interface as inter
 
-firebaseConfig = {
+firebase_config = {
     "apiKey": "AIzaSyBEjDWngQQAqT1ChTrbw_55bW_Di_X1c7o",
     "authDomain": "shippingpoint-01.firebaseapp.com",
     "databaseURL": "https://shippingpoint-01.firebaseio.com",
@@ -14,7 +14,8 @@ firebaseConfig = {
     "measurementId": "G-MY4XZT7978",
     "serviceAccount": "/Users/emilylouden/Desktop/fork-11/modules/service_id.json"
   }
-  # CHANGE SERVICE ACCOUNT ID ON SERVER
+
+# CHANGE SERVICE ACCOUNT ID PATH ON SERVER
 
 # __Admin__ google account used to login in firebase, I already sign him up
 # Email: tech0493@gmail.com
@@ -22,58 +23,44 @@ firebaseConfig = {
 
 
 # create a new user
-def signUpNewUser(email, password):
-    firebase = pyrebase.initialize_app(firebaseConfig)
+def sign_up_new_user(email, password, userid):
+    # if inter.user_exists(email, "email"):
+    firebase = pyrebase.initialize_app(firebase_config)
     authen = firebase.auth()
-    new_User = authen.create_user_with_email_and_password(email, password)
-    return new_User
-
-
-data = ["candy@gmail.com", "cookie"]
+    user = authen.create_user_with_email_and_password(email, password)
+    db = firebase.database()
+    data = {'userid': userid}
+    comma_email = email.replace(".", ",")
+    db.child("users").child(comma_email).set(data)
+    return True
 
 
 # allow the user to sign into the account
-# NEEDS TESTING
 def login(email, password):
-    if inter.user_exists(email, "email"):
-        firebase = pyrebase.initialize_app(firebaseConfig)
-        authen = firebase.auth()
-        user = authen.sign_in_with_email_and_password(email, password)
-        print(db.child(user).get())
-        return user['email']
-    else:
-        return False
+    firebase = pyrebase.initialize_app(firebase_config)
+    authen = firebase.auth()
+    user = authen.sign_in_with_email_and_password(email, password)
+    db = firebase.database()
+    comma_email = email.replace(".", ",")
+    resp = db.child("users").child(comma_email).get()
+    return resp.val()
 
 
-# retrevieve the data using the get method
-def retreiveData():
+print(login("test12@gmail.com", "test123"))
+
+
+def get_users():
     firebase = pyrebase.initialize_app(firebaseConfig)
     authen = firebase.auth()
     db = firebase.database()
-    user = db.child("candy@gmail.com").get()
-    print(user)
-    return user
-# adds data to the database
+    print(db.child("users").get().val())
 
 
-retreiveData()
-
-
-def pushData():
+def remove_user():
     firebase = pyrebase.initialize_app(firebaseConfig)
     authen = firebase.auth()
     db = firebase.database()
-    db.child("user").push(data)
-    print(data)
-    print("User info added")
-    return 1
-
-
-# remove user
-def removeU():
-    firebase = pyrebase.initialize_app(firebaseConfig)
-    authen = firebase.auth()
-    db = firebase.database()
+    print(db.child("users"))
     db.child("user").child("key").remove()
     print("User removed!")
     return 1
