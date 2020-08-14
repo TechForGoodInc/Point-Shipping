@@ -2,7 +2,7 @@ import stripe
 import json
 from modules import interface as inter
 
-stripe.api_key = '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'
+stripe.api_key = 'sk_test_dapedBnAMB6uk0EtabwAZTn800Dp0xgRzr'
 
 # customer's metadata will contain IDs of their charges (added
 # manually by us)

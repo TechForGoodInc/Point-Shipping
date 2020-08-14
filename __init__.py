@@ -133,8 +133,10 @@ def identify_user():
         key_list = ["username", "id", "email", "sender", "street",
                     "recovery_id", "city", "state", "zip", "country",
                     "password"]
-        if username == key_list["username"]:
-            full_resp = dict(zip(key_list, resp[0]))
+        full_resp = dict(zip(key_list, resp[0]))
+        print("here\n\n\n\n")
+        print(full_resp)
+        if username == full_resp["username"]:
             response = app.response_class(response=json.dumps(full_resp),
                                           status=200,
                                           mimetype='application/json')
