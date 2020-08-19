@@ -95,7 +95,7 @@ def record_package(userid, courierid, shipmentid):
 
 
 def update_code(code, userid):
-    query = f"""UPDATE users SET \"recoverid\" = \'{code}\'
+    query = f"""UPDATE users SET \"recoveryid\" = \'{code}\'
                 WHERE \"id\" = \'{code}\'"""
     success_check = execute_query(query)
     return success_check
@@ -103,7 +103,7 @@ def update_code(code, userid):
 
 def code_check(code, userid):
     query = f"""SELECT COUNT(*) FROM users WHERE \"id\" = \'{userid}\'
-                AND \"recoverid\" = \'{userid}\'"""
+                AND \"recoveryid\" = \'{userid}\'"""
     check = execute_read_query(query)
     return check[0][0] > 0
 
