@@ -96,7 +96,7 @@ def record_package(userid, courierid, shipmentid):
 
 def update_code(code, userid):
     query = f"""UPDATE users SET recoveryid = \'{code}\'
-                WHERE id = \'{userid}\'"""
+                WHERE id = \'{user}\'"""
     success_check = execute_query(query)
     return success_check
 
