@@ -130,12 +130,9 @@ def identify_user():
     if inter.user_exists(email, "email"):
         resp = inter.execute_read_query(
             f"SELECT * FROM users WHERE email = \'{email}\'")
-        key_list = ["username", "id", "email", "sender", "street",
-                    "recovery_id", "city", "state", "zip", "country",
-                    "password"]
+        key_list = ["id", "recoverid", "email", "sender", "street",
+                    "city", "state", "zip", "country", "password"]
         full_resp = dict(zip(key_list, resp[0]))
-        print("here\n\n\n\n")
-        print(full_resp)
         if username == full_resp["username"]:
             response = app.response_class(response=json.dumps(full_resp),
                                           status=200,
