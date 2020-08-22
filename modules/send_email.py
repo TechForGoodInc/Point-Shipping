@@ -1,8 +1,7 @@
 import smtplib
 import ssl
 import random
-#from modules import interface as inter
-import interface as inter
+from modules import interface as inter
 
 def send_code(user_email, userid):
     port = 465  # For SSL
