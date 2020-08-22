@@ -3,7 +3,6 @@ import ssl
 import random
 from modules import interface as inter
 
-
 def send_code(user_email, userid):
     port = 465  # For SSL
     smtp_server = "smtp.gmail.com"
