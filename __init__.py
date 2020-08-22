@@ -6,6 +6,8 @@ from modules import shipping as ship
 from modules import payment as pay
 from modules import send_email as mail
 
+
+
 ### BASIC INITIALIATION ###
 app = Flask(__name__)
 CORS(app)
