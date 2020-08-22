@@ -102,10 +102,13 @@ def update_code(code, userid):
 
 
 def code_check(code, userid):
-    query = f"""SELECT COUNT(*) FROM users WHERE \"id\" = \'{userid}\'
+    query = f"""SELECT * FROM users WHERE \'id\' = \'{userid}\'
                 AND \'recoveryid\' = \'{code}\'"""
     check = execute_read_query(query)
-    return check[0][0] > 0
+    try:
+        return check[0][0] > 0
+    except IndexError:
+        return False
 
 # for debugging: export FLASK_ENV=development
 
