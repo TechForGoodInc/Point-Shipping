@@ -102,16 +102,14 @@ def update_code(code, userid):
 
 
 def code_check(code, userid):
-    query = f"""SELECT recoveryid FROM users WHERE \'id\' = \'{userid}\'"""
+    query = f"""SELECT recoveryid FROM users WHERE id = \'{userid}\'"""
     check = execute_read_query(query)
     try:
-        print(check[0])
-        return check[0] == code
+        return str(check[0][0]) == code
     except IndexError:
         return False
 
 
-print(code_check('123456', '2'))
 # for debugging: export FLASK_ENV=development
 
 # to run:
