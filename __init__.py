@@ -46,10 +46,7 @@ def user():
     if request.method == 'POST':
         if inter.user_exists(user_name):
             return app.response_class(status=409)
-        # used to generate the user id (requires at least user
-        # id to already exist)
-        max_id = 0
-        #max_id = inter.execute_query("SELECT MAX(id) FROM users")
+        max_id = inter.execute_query("SELECT MAX(id) FROM users")
         idval = max_id + 1
         email = request.form['email']
         sender_name = request.form['sender_name']
