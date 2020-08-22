@@ -34,7 +34,6 @@ def send_code(user_email, userid):
     else:
         return False
 
-send_code("ecl.damoose@gmail.com", 1)
 
 def send_url(receiver_email, url):
     port = 465  # For SSL
