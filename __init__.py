@@ -96,6 +96,8 @@ def update_user(col_name):
     idval = request.form['id']
     if inter.user_exists(idval, 'id'):
         replace = request.form[f"{col_name}"]
+        if col_name == "password":
+            replace = inter.encrypt_password(replace)
         query = f"UPDATE users SET {col_name} = \'{replace}\' WHERE id = \'{idval}\'"
         print(query)
         if inter.execute_query(query):

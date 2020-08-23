@@ -83,7 +83,6 @@ def password_match(username, input_password):
 def encrypt_password(password_input):
     byt_pswd = password_input.encode('utf-8')
     hashed = bcrypt.hashpw(byt_pswd, bcrypt.gensalt())
-    hash_test = hashed.decode("utf-8")
     return hashed.decode("utf-8")
 
 
@@ -102,13 +101,13 @@ def update_code(code, userid):
 
 
 def code_check(code, userid):
-    query = f"""SELECT recoveryid FROM users WHERE id = \'{userid}\'"""
+    query = f"""SELECT recoveryid FROM users WHERE \'id\' = \'{userid}\'"""
     check = execute_read_query(query)
     try:
-        return str(check[0][0]) == code
+        print(check[0])
+        return check[0] == code
     except IndexError:
         return False
-
 
 # for debugging: export FLASK_ENV=development
 
