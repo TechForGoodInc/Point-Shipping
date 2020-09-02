@@ -14,8 +14,11 @@ def new_user(userid, email):
 
 
 def get_customer_id(userid):
+    print("\n\n\nhere\n\n\n")
+    print(userid)
     query = f"SELECT stripe_id FROM stripe WHERE id = \'{userid}\'"
     data = inter.execute_read_query(query)
+    print(data)
     if data:
         return data[0][0]
     else:

@@ -3,6 +3,7 @@ import ssl
 import random
 from modules import interface as inter
 
+
 def send_code(user_email, userid):
     port = 465  # For SSL
     smtp_server = "smtp.gmail.com"
@@ -12,6 +13,7 @@ def send_code(user_email, userid):
     # not good practice to save pw in code
 
     code = random.randint(100000, 999999)
+    print(code)
     message = f"""\
     Subject: Point Shipping Password Recovery
 

@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, json
 from flask_cors import CORS
 import requests
+from random import randint
 from modules import interface as inter
 from modules import shipping as ship
 from modules import payment as pay
 from modules import send_email as mail
-
 
 
 ### BASIC INITIALIATION ###
@@ -25,7 +25,9 @@ def getdatabase():
                               mimetype='application/json')
 
 
-# userid is the same as the package deliver number
+getdatabase()
+
+
 @app.route('/getpackages/<userid>/', methods=['GET'])
 def packages(userid):
     resp = ship.get_package(userid)
@@ -48,7 +50,8 @@ def user():
     if request.method == 'POST':
         if inter.user_exists(user_name):
             return app.response_class(status=409)
-        max_id = inter.execute_query("SELECT MAX(id) FROM users")
+        max_id = inter.execute_query("SELECT COUNT(id) FROM users")
+        print(max_id)
         idval = max_id + 1
         email = request.form['email']
         sender_name = request.form['sender_name']
@@ -65,6 +68,7 @@ def user():
         quer4 = f"\'{sender_country}\', \'{encrypted}\')"
         query = " ".join([quer1, quer2, quer3, quer4])
         if inter.execute_query(query) and pay.new_user(idval, email):
+            print("user added")
             return app.response_class(status=200)
 
     elif request.method == 'DELETE':
@@ -126,6 +130,7 @@ def update_user(col_name):
 # in tandem with the update_user method which takes a user id
 @app.route('/identuser/', methods=['POST'])
 def identify_user():
+    print("here!!!\n\n\n")
     email = request.form['email']
     username = request.form['username']
     if inter.user_exists(email, "email"):
