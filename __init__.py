@@ -25,9 +25,6 @@ def getdatabase():
                               mimetype='application/json')
 
 
-getdatabase()
-
-
 @app.route('/getpackages/<userid>/', methods=['GET'])
 def packages(userid):
     resp = ship.get_package(userid)
@@ -50,7 +47,7 @@ def user():
     if request.method == 'POST':
         if inter.user_exists(user_name):
             return app.response_class(status=409)
-        max_id = inter.execute_query("SELECT COUNT(id) FROM users")
+        max_id = inter.execute_query("SELECT MAX(id) FROM users")
         print(max_id)
         idval = max_id + 1
         email = request.form['email']
