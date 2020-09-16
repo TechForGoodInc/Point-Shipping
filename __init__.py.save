@@ -25,6 +25,8 @@ def getdatabase():
                               mimetype='application/json')
 
 
+
+
 @app.route('/getpackages/<userid>/', methods=['GET'])
 def packages(userid):
     resp = ship.get_package(userid)
@@ -47,8 +49,8 @@ def user():
     if request.method == 'POST':
         if inter.user_exists(user_name):
             return app.response_class(status=409)
-        max_id = inter.execute_read_query("SELECT COUNT(*) FROM users")
-        idval = max_id[0][0] + 1
+        max_id = inter.execute_query("SELECT COUNT(*) FROM users")
+        idval = max_id + 1
         email = request.form['email']
         sender_name = request.form['sender_name']
         sender_street = request.form['sender_street']
@@ -79,8 +81,6 @@ def user():
 
 
 ### CHECK IF USERNAME IS ALREADY IN USE ###
-
-
 @app.route('/userexists/', methods=['GET'])
 def user_exists():
     if request.method == 'GET':
@@ -278,6 +278,7 @@ def charge_card():
 def send_email():
     email = request.form['email']
     userid = request.form['userid']
+    update_code(code, userid)
     if inter.user_exists(email, "email"):
         resp = mail.send_code(email, userid)
         if resp:
